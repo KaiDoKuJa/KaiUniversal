@@ -1,0 +1,112 @@
+﻿using Kai.Universal.Data;
+using Kai.Universal.Sql.Clause;
+using Kai.Universal.Sql.Clause.Dialect;
+using Kai.Universal.Sql.Result;
+using Kai.Universal.Sql.Type;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Kai.Universal.Sql.Handler {
+    public class DmlHandler {
+
+        public AbstractSqlClause Clause { get; set; }
+
+        public DmlHandler() { }
+        public DmlHandler(AbstractSqlClause clause) {
+            this.Clause = clause;
+        }
+
+        public static DmlHandler createHandler(DmlInfo dmlInfo) {
+            return createHandler(DbmsType.Default, dmlInfo);
+        }
+
+        public static DmlHandler createHandler(DbmsType dbmsType, DmlInfo dmlInfo) {
+            AbstractSqlClause clause = createClause(dbmsType, dmlInfo);
+            return new DmlHandler(clause);
+        }
+
+        private static AbstractSqlClause createClause(DbmsType dbmsType, DmlInfo dmlInfo) {
+            AbstractSqlClause clause = null;
+            switch (dmlInfo.DmlType) {
+                case DmlType.Select:
+                    switch (dbmsType) {
+                        case DbmsType.FromSqlServer2005:
+                        case DbmsType.FromSqlServer2012:
+                            clause = new SqlServerClause();
+                            break;
+                        case DbmsType.Default:
+                        default:
+                            clause = new QueryClause();
+                            break;
+                    }
+                    break;
+                case DmlType.Insert:
+                    clause = new InsertClause();
+                    break;
+                case DmlType.Update:
+                    clause = new UpdateClause();
+                    break;
+                case DmlType.Delete:
+                    clause = new DeleteClause();
+                    break;
+                default:
+                    throw new Exception("no such dml type!");
+            }
+            clause.DmlInfo = dmlInfo;
+            clause.DbmsType = dbmsType;
+            return clause;
+        }
+
+        public String getSql(ModelInfo modelInfo) {
+            if (modelInfo == null) return Clause.GetSql(null);
+            SqlGeneratorMode mode = modelInfo.Mode;
+            switch (mode) {
+                case SqlGeneratorMode.PreparedStatement:
+                    return Clause.GetPreparedSql(modelInfo);
+                case SqlGeneratorMode.Statement:
+                default:
+                    return Clause.GetSql(modelInfo);
+            }
+        }
+
+        public String getSql(QueryType queryType, ModelInfo modelInfo) {
+            if (modelInfo == null) return Clause.GetSql(null);
+            SqlGeneratorMode mode = modelInfo.Mode;
+            switch (mode) {
+                case SqlGeneratorMode.PreparedStatement:
+                    return Clause.GetPreparedSql(modelInfo);
+                case SqlGeneratorMode.Statement:
+                default:
+                    if (Clause is LimitingResultClause) {
+                        LimitingResultClause limitingResultClause = (LimitingResultClause)Clause;
+                        switch (queryType) {
+                            case QueryType.SelectPaging:
+                                return limitingResultClause.GetPagingSql(modelInfo);
+                            case QueryType.SelectTop:
+                                return limitingResultClause.GetFetchFirstSql(modelInfo);
+                            default:
+                                break;
+                        }
+                    }
+                    if (Clause is QueryClause) {
+                        QueryClause queryClause = (QueryClause)Clause;
+                        switch (queryType) {
+                            case QueryType.SelectAll:
+                                return queryClause.GetSelectAllSql();
+                            case QueryType.SelectCnt:
+                                return queryClause.GetSelectCntSql(modelInfo);
+                            default:
+                                break;
+                        }
+                    }
+                    return Clause.GetSql(modelInfo);
+            }
+        }
+
+        public string GetLastSql() {
+            return Clause.GetLastSql();
+        }
+    }
+}

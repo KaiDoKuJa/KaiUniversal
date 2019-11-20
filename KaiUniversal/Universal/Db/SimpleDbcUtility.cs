@@ -1,0 +1,240 @@
+﻿using Kai.Universal.Text;
+using Kai.Universal.Data;
+using Kai.Universal.Db.Fetch;
+using Kai.Universal.Sql.Type;
+using Kai.Universal.Util;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using Kai.Universal.Sql.Handler;
+
+namespace Kai.Universal.Db {
+
+    public class SimpleDbcUtility {
+
+        private static readonly int DEFAULT_COMMAND_TIMEOUT = 30;
+        private static readonly string NOT_CONNECT = "db is not connect...";
+        private static readonly string EXEC_NON_QUERIES_ERR = "row: {0}, err-sql: {1}";
+
+        private SimpleDbcUtility() {
+        }
+
+        public static int GetSelectCount(DbConnection connection, string sql) {
+            int count = -1;
+
+            if (connection == null) {
+                throw new Exception(NOT_CONNECT);
+            }
+
+            DbCommand command = null;
+            try {
+                command = connection.CreateCommand();
+                command.CommandText = sql;
+                command.CommandType = CommandType.Text;
+
+                object result = command.ExecuteScalar();
+                if (result != null) {
+                    count = Int32.Parse(result.ToString());
+                }
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                CloseUtility.DisposeSqlCommmand(ref command);
+            }
+            return count;
+        }
+
+        public static List<T> GetData0<T>(DbConnection connection, int commandTimeout, string sql) where T : new() {
+            DmlInfo dmlInfo = new DmlInfo();
+            dmlInfo.ColumnWordCase = WordCase.UPPER_UNDERSCORE;
+            dmlInfo.MapModelWordCase = WordCase.LOWER_CAMEL;
+
+            ModelFetch<T> fetch = new ModelFetch<T>();
+            fetch.CommandTimeout = commandTimeout;
+            fetch.DmlInfo = dmlInfo;
+            fetch.Execute(connection, sql);
+            return fetch.GetResult();
+        }
+
+        public static List<T> GetData0<T>(DbConnection connection, string sql) where T : new() {
+            return GetData0<T>(connection, DEFAULT_COMMAND_TIMEOUT, sql);
+        }
+
+        public static List<Dictionary<string, object>> GetMapData(DbConnection connection, int commandTimeout, String sql) {
+            MapDataFetch fetch = new MapDataFetch();
+            fetch.CommandTimeout = commandTimeout;
+            fetch.Execute(connection, sql);
+            return fetch.GetResult();
+        }
+
+        public static List<Dictionary<string, object>> GetMapData(DbConnection connection, String sql) {
+            return GetMapData(connection, DEFAULT_COMMAND_TIMEOUT, sql);
+        }
+
+        public static List<Dictionary<string, object>> GetMapData(DbConnection connection, DmlHandler handler) {
+            MapDataFetch fetch = new MapDataFetch();
+            fetch.DmlInfo = handler.Clause.DmlInfo;
+            fetch.Execute(connection, handler.GetLastSql());
+            return fetch.GetResult();
+        }
+
+        public static PagerData<Dictionary<string, object>> GetPagerMapData(DbConnection connection, DmlHandler handler, ModelInfo modelInfo) {
+            PagerData<Dictionary<string, object>> pagerData = new PagerData<Dictionary<string, object>>();
+            // select count
+            int totalCount = GetSelectCount(connection, handler.getSql(QueryType.SelectCnt, modelInfo));
+            pagerData.SelectCount = totalCount;
+            if (totalCount > 0) {
+                // select paging sql
+                handler.getSql(QueryType.SelectPaging, modelInfo);
+                List<Dictionary<string, object>> datas = GetMapData(connection, handler);
+                pagerData.Datas = datas;
+                // other info
+                pagerData.PageNumber = modelInfo.PageNumber;
+                pagerData.EachPageSize = modelInfo.EachPageSize;
+            } else {
+                pagerData.PageNumber = 0;
+                pagerData.EachPageSize = 0;
+            }
+            return pagerData;
+        }
+
+        public static String getJsonData(DbConnection connection, int commandTimeout, String sql) {
+            JsonFetch fetch = new JsonFetch();
+            fetch.CommandTimeout = commandTimeout;
+            fetch.Execute(connection, sql);
+            return fetch.GetResult();
+        }
+
+        public static String getJsonData(DbConnection connection, String sql) {
+            return getJsonData(connection, DEFAULT_COMMAND_TIMEOUT, sql);
+        }
+
+        public static String getJsonData(DbConnection connection, DmlHandler handler) {
+            JsonFetch fetch = new JsonFetch();
+            fetch.DmlInfo = handler.Clause.DmlInfo;
+            fetch.Execute(connection, handler.GetLastSql());
+            return fetch.GetResult();
+        }
+
+        public static DataTable GetDataTable(DbConnection connection, int commandTimeout, string sql) {
+            DataTableFetch fetch = new DataTableFetch();
+            fetch.CommandTimeout = commandTimeout;
+            fetch.Execute(connection, sql);
+            return fetch.GetResult();
+        }
+
+        public static DataTable GetDataTable(DbConnection connection, string sql) {
+            return GetDataTable(connection, 30, sql);
+        }
+
+        public static DataTable GetDataTable(DbConnection connection, DmlHandler handler) {
+            DataTableFetch fetch = new DataTableFetch();
+            fetch.Execute(connection, handler.GetLastSql());
+            return fetch.GetResult();
+        }
+
+        public static Object getKeyFromInserted(DbCommand command, String sql) {
+            throw new NotSupportedException("C# not support");
+        }
+
+        public static int ExecuteNonQuery(DbConnection connection, string sql) {
+            int count = -1;
+
+            if (connection == null) {
+                throw new Exception(NOT_CONNECT);
+            }
+
+            DbTransaction transaction = null;
+            DbCommand command = null;
+            try {
+                transaction = connection.BeginTransaction();
+
+                command = connection.CreateCommand();
+                command.CommandText = sql;
+                command.CommandType = CommandType.Text;
+                command.Transaction = transaction;
+
+                count = command.ExecuteNonQuery();
+
+                transaction.Commit();
+            } catch (Exception e) {
+                RollbackTransaction(ref transaction);
+                throw e;
+            } finally {
+                CloseUtility.DisposeSqlCommmand(ref command);
+            }
+            return count;
+        }
+
+        public static int ExecuteNonQueries(DbCommand command, List<String> sqls) {
+            int result = 0;
+            try {
+                foreach (string sql in sqls) {
+                    if (sql == null || "".Equals(sql.Trim())) {
+                        continue;
+                    }
+                    command.CommandText = sql;
+                    command.CommandType = CommandType.Text;
+                    command.ExecuteNonQuery();
+                    result++;
+                }
+            } catch (Exception e) {
+                int n = result + 1;
+                if (n > 0) {
+                    string errMsg = String.Format(EXEC_NON_QUERIES_ERR, n + 1, sqls[n]);
+                    throw new Exception(errMsg, e);
+                } else {
+                    throw e;
+                }
+            }
+            return result;
+        }
+
+        public static bool ExecuteNonQueries(DbConnection connection, List<string> sqls) {
+            bool result = false;
+
+            if (connection == null) {
+                throw new Exception(NOT_CONNECT);
+            }
+
+            DbTransaction transaction = null;
+            DbCommand command = null;
+            try {
+                transaction = connection.BeginTransaction();
+
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                ExecuteNonQueries(command, sqls);
+
+                transaction.Commit();
+                result = true;
+            } catch (Exception e) {
+                // TODO : can use SqlException , SqlError
+                RollbackTransaction(ref transaction);
+                throw e;
+            } finally {
+                CloseUtility.DisposeSqlCommmand(ref command);
+            }
+            return result;
+        }
+
+        public static bool ExecuteNonQueries(DbConnection connection, string[] sqls) {
+            return ExecuteNonQueries(connection, sqls.Cast<string>().ToList());
+        }
+
+        public static void RollbackTransaction(ref DbTransaction transaction) {
+            try {
+                if (transaction != null) {
+                    transaction.Rollback();
+                }
+            } catch {
+            } finally {
+                transaction = null;
+            }
+        }
+
+
+    }
+}

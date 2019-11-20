@@ -1,0 +1,31 @@
+
+
+Java UnsupportedOperationException
+C# NotSupportedException
+
+
+
+
+Character.toUpperCase(wordCase.charAt(0))
+Char.ToUpper(wordCase[0])
+
+s.charAt(0)
+s[0]
+
+Map<String, String>
+Dictionary<string, string>
+
+ArrayList<>
+List<Object>
+
+
+////Visual studio replace reguar
+
+modelInfo.get(\w+)\(\) --> modelInfo.$1
+DmlInfo.get(\w+)\(\) --> DmlInfo.$1
+
+clause.setDmlInfo(dmlInfo);
+pagerData.set(\w+)\((\w+)\)
+pagerData.$1 = $2
+
+pagerData.setSelectCount(totalCount);

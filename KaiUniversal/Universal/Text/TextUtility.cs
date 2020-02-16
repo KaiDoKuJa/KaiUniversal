@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,56 +12,17 @@ namespace Kai.Universal.Text {
 
         private TextUtility() { }
 
-        public static string ToString(DateTime dateTime, string type) {
-            string result = "";
-            switch (type) {
-                case "DATE":
-                    result = String.Format("{0}-{1:00}-{2:00}", dateTime.Year, dateTime.Month, dateTime.Day);
-                    break;
-
-                case "DTTM":
-                    result = String.Format("{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}", dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second);
-                    break;
-
-                case "YYYYMMDD":
-                    result = String.Format("{0}{1:00}{2:00}", dateTime.Year, dateTime.Month, dateTime.Day);
-                    break;
-
-                default:
-                    break;
-            }
-            return result;
-        }
-
         public static string ToDefaultString(string source, string defaultValue) {
-            if (source == null || source == "" || source.Trim() == "") {
+        if (source == null || "".Equals(source.Trim())) {
                 return defaultValue;
             }
             return source;
         }
 
-        //            //Regex.Replace(s, @"(?<!_)([A-Z])", "_$1"); 
-        //            //Regex.Replace(s, @"(?<=[a-z])([A-Z])", @"_$1");
-
-        //            Regex upperCaseRegex = new Regex(@"[A-Z]{1}[a-z]*");
-        //// TODO : Pattern upperCaseRegex = Pattern.compile("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])");
-        ////        Here is how the improved regex splits the example data:
-        ////
-        ////        value -> value
-        ////        camelValue -> camel / Value
-        ////        TitleValue -> Title / Value
-        ////        VALUE -> VALUE
-        ////        eclipseRCPExt -> eclipse / RCP / Ext
-        //            string[] words = upperCaseRegex.Matches(caseString).Cast<Match>().Select(m => m.Value).ToArray();
-
-
         private static string CamelCaseToDelimiterCase(string s, string delimiter, bool toLowerCase) {
             string caseString = Char.ToUpper(s[0]) + s.Substring(1);
 
             Regex upperCaseRegex = new Regex(@"[A-Z]{1}[a-z]*");
-            //TODO : check -->
-            //Pattern upperCaseRegex = Pattern.compile("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])");
-            //string[] words = upperCaseRegex.Split(caseString.ToCharArray());
             string[] words = upperCaseRegex.Matches(caseString).Cast<Match>().Select(m => m.Value).ToArray();
 
             StringBuilder sb = new StringBuilder();
@@ -97,7 +57,7 @@ namespace Kai.Universal.Text {
         }
 
         public static string ConvertWordCase(string s, WordCase srcCase, WordCase outCase) {
-            if (s == null || "".Equals(s)) {
+            if (s == null || "".Equals(s.Trim())) {
                 return "";
             }
             if (s.Length == 1) {

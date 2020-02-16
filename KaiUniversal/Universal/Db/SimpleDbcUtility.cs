@@ -1,14 +1,14 @@
-﻿using Kai.Universal.Text;
-using Kai.Universal.Data;
+﻿using Kai.Universal.Data;
 using Kai.Universal.Db.Fetch;
+using Kai.Universal.Sql.Handler;
 using Kai.Universal.Sql.Type;
+using Kai.Universal.Text;
 using Kai.Universal.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using Kai.Universal.Sql.Handler;
 
 namespace Kai.Universal.Db {
 
@@ -25,7 +25,7 @@ namespace Kai.Universal.Db {
             int count = -1;
 
             if (connection == null) {
-                throw new Exception(NOT_CONNECT);
+                throw new ArgumentException("connection", NOT_CONNECT);
             }
 
             DbCommand command = null;
@@ -38,8 +38,8 @@ namespace Kai.Universal.Db {
                 if (result != null) {
                     count = Int32.Parse(result.ToString());
                 }
-            } catch (Exception e) {
-                throw e;
+            } catch {
+                throw;
             } finally {
                 CloseUtility.DisposeSqlCommmand(ref command);
             }
@@ -100,18 +100,18 @@ namespace Kai.Universal.Db {
             return pagerData;
         }
 
-        public static String getJsonData(DbConnection connection, int commandTimeout, String sql) {
+        public static string GetJsonData(DbConnection connection, int commandTimeout, string sql) {
             JsonFetch fetch = new JsonFetch();
             fetch.CommandTimeout = commandTimeout;
             fetch.Execute(connection, sql);
             return fetch.GetResult();
         }
 
-        public static String getJsonData(DbConnection connection, String sql) {
-            return getJsonData(connection, DEFAULT_COMMAND_TIMEOUT, sql);
+        public static string GetJsonData(DbConnection connection, string sql) {
+            return GetJsonData(connection, DEFAULT_COMMAND_TIMEOUT, sql);
         }
 
-        public static String getJsonData(DbConnection connection, DmlHandler handler) {
+        public static string GetJsonData(DbConnection connection, DmlHandler handler) {
             JsonFetch fetch = new JsonFetch();
             fetch.DmlInfo = handler.Clause.DmlInfo;
             fetch.Execute(connection, handler.GetLastSql());
@@ -143,7 +143,7 @@ namespace Kai.Universal.Db {
             int count = -1;
 
             if (connection == null) {
-                throw new Exception(NOT_CONNECT);
+                throw new ArgumentException(NOT_CONNECT);
             }
 
             DbTransaction transaction = null;
@@ -159,9 +159,9 @@ namespace Kai.Universal.Db {
                 count = command.ExecuteNonQuery();
 
                 transaction.Commit();
-            } catch (Exception e) {
+            } catch {
                 RollbackTransaction(ref transaction);
-                throw e;
+                throw;
             } finally {
                 CloseUtility.DisposeSqlCommmand(ref command);
             }
@@ -184,9 +184,9 @@ namespace Kai.Universal.Db {
                 int n = result + 1;
                 if (n > 0) {
                     string errMsg = String.Format(EXEC_NON_QUERIES_ERR, n + 1, sqls[n]);
-                    throw new Exception(errMsg, e);
+                    throw new InvalidOperationException(errMsg, e);
                 } else {
-                    throw e;
+                    throw;
                 }
             }
             return result;
@@ -196,7 +196,7 @@ namespace Kai.Universal.Db {
             bool result = false;
 
             if (connection == null) {
-                throw new Exception(NOT_CONNECT);
+                throw new ArgumentNullException("connection", NOT_CONNECT);
             }
 
             DbTransaction transaction = null;
@@ -210,10 +210,9 @@ namespace Kai.Universal.Db {
 
                 transaction.Commit();
                 result = true;
-            } catch (Exception e) {
-                // TODO : can use SqlException , SqlError
+            } catch {
                 RollbackTransaction(ref transaction);
-                throw e;
+                throw;
             } finally {
                 CloseUtility.DisposeSqlCommmand(ref command);
             }
@@ -221,7 +220,7 @@ namespace Kai.Universal.Db {
         }
 
         public static bool ExecuteNonQueries(DbConnection connection, string[] sqls) {
-            return ExecuteNonQueries(connection, sqls.Cast<string>().ToList());
+            return ExecuteNonQueries(connection, sqls.ToList());
         }
 
         public static void RollbackTransaction(ref DbTransaction transaction) {

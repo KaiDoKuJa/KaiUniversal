@@ -1,7 +1,5 @@
 ﻿using Kai.Universal.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
@@ -11,7 +9,7 @@ namespace Kai.Universal.Sql.Clause {
 
         protected override void NecessaryCheck() {
             if (base.IsEmptyNonQueryMandatoryColumns()) {
-                throw new Exception(NO_WHERE_COLUMNS);
+                throw new ArgumentException(NO_WHERE_COLUMNS);
             }
         }
 

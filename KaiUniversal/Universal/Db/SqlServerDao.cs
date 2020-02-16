@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
+﻿using System.Data.Common;
+#if NETSTANDARD2_0
+using Microsoft.Data.SqlClient;
+#else 
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
+#endif
 
 namespace Kai.Universal.Db {
     public class SqlServerDao : SimpleDao {

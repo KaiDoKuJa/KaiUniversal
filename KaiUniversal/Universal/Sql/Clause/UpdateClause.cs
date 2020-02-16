@@ -1,8 +1,7 @@
-﻿using Kai.Universal.Text;
-using Kai.Universal.Data;
+﻿using Kai.Universal.Data;
+using Kai.Universal.Text;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
@@ -15,10 +14,10 @@ namespace Kai.Universal.Sql.Clause {
 
         protected override void NecessaryCheck() {
             if (base.IsEmptyColumns()) {
-                throw new Exception(NO_COLUMNS);
+                throw new ArgumentNullException(NO_COLUMNS);
             }
             if (base.IsEmptyNonQueryMandatoryColumns()) {
-                throw new Exception(NO_WHERE_COLUMNS);
+                throw new ArgumentNullException(NO_WHERE_COLUMNS);
             }
         }
 
@@ -72,10 +71,8 @@ namespace Kai.Universal.Sql.Clause {
          */
         protected void AppendColsWithProp(string[] cols, object model, string delimiter) {
             bool isMapModel = false;
-            Dictionary<object, object> map = null;
-            if (model is Dictionary<object, object>) {
-                map = (Dictionary<object, object>)model;
-
+            var map = model as Dictionary<object, object>;
+            if (map != null) {
                 isMapModel = true;
             }
             for (int i = 0; i < cols.Length; i++) {
@@ -100,9 +97,8 @@ namespace Kai.Universal.Sql.Clause {
 
         protected void AppendColsWithPrepareProp(string[] cols, object model, string delimiter) {
             bool isMapModel = false;
-            Dictionary<object, object> map = null;
-            if (model is Dictionary<object, object>) {
-                map = (Dictionary<object, object>)model;
+            var map = model as Dictionary<object, object>;
+            if (map != null) {
                 isMapModel = true;
             }
             for (int i = 0; i < cols.Length; i++) {

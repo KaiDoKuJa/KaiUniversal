@@ -33,7 +33,7 @@ namespace Kai.Universal.Crypto {
             CryptoStream cs = null;
 
             try {
-                provider = getProvider();
+                provider = GetProvider();
 
                 
                 byte[] input = encoding.GetBytes(message);
@@ -55,10 +55,10 @@ namespace Kai.Universal.Crypto {
             } finally {
                 if (cs != null)
                     cs.Dispose();
-
+#if !NET35
                 if (provider != null)
                     provider.Dispose();
-
+#endif
                 if (ms != null)
                     ms.Dispose();
             }
@@ -74,7 +74,7 @@ namespace Kai.Universal.Crypto {
             CryptoStream cs = null;
 
             try {
-                provider = getProvider();
+                provider = GetProvider();
 
                 int n = message.Length / 2;
                 byte[] input = HexUtility.HexToBytes(message);
@@ -90,10 +90,10 @@ namespace Kai.Universal.Crypto {
             } finally {
                 if (cs != null)
                     cs.Dispose();
-
+#if !NET35
                 if (provider != null)
                     provider.Dispose();
-
+#endif
                 if (ms != null)
                     ms.Dispose();
             }
@@ -102,18 +102,18 @@ namespace Kai.Universal.Crypto {
         }
 
         public void SetCrptoKey(string key) {
-            if (key == null || "".Equals(key)) {
-                throw new Exception("Crpto key is empty!");
+            if (key == null || "".Equals(key.Trim())) {
+                throw new ArgumentNullException("key", "The crptoKey is empty!");
             }
 
             crptoKey = ASCIIEncoding.ASCII.GetBytes(key);
 
             if (!(crptoKey.Length == 16 || crptoKey.Length == 24 || crptoKey.Length == 32)) {
-                throw new Exception("Crpto key must be length 16 or 24 or 32 !");
+                throw new ArgumentException("Crpto key must be length 16 or 24 or 32 !", "key");
             }
         }
 
-        private AesCryptoServiceProvider getProvider() {
+        private AesCryptoServiceProvider GetProvider() {
             AesCryptoServiceProvider provider = null;
 
             try {

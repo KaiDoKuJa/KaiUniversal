@@ -1,8 +1,6 @@
-﻿using Kai.Universal.Sql.Where;
-using Kai.Universal.Data;
+﻿using Kai.Universal.Data;
+using Kai.Universal.Sql.Where;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
@@ -12,7 +10,7 @@ namespace Kai.Universal.Sql.Clause {
 
         protected override void NecessaryCheck() {
             if (base.IsEmptyColumns()) {
-                throw new Exception(NO_COLUMNS);
+                throw new ArgumentException(NO_COLUMNS);
             }
         }
 
@@ -74,22 +72,22 @@ namespace Kai.Universal.Sql.Clause {
 
         protected void AppendOrderBy(string modelOrderBy) {
             string orderBy = modelOrderBy;
-            if (orderBy == null || "".Equals(orderBy)) {
+            if (orderBy == null || "".Equals(orderBy.Trim())) {
                 orderBy = base.DmlInfo.OrderBy;
             }
 
-            if (orderBy != null && !"".Equals(orderBy)) {
+            if (orderBy != null && !"".Equals(orderBy.Trim())) {
                 sb.Append(" order by ");
                 sb.Append(orderBy);
             }
         }
         protected void AppendGroupBy(string modelGroupBy) {
             string GroupBy = modelGroupBy;
-            if (GroupBy == null || "".Equals(GroupBy)) {
+            if (GroupBy == null || "".Equals(GroupBy.Trim())) {
                 GroupBy = base.DmlInfo.GroupBy;
             }
 
-            if (GroupBy != null && !"".Equals(GroupBy)) {
+            if (GroupBy != null && !"".Equals(GroupBy.Trim())) {
                 sb.Append(" group by ");
                 sb.Append(GroupBy);
             }

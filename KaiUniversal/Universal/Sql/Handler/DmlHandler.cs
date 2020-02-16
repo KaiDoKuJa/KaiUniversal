@@ -4,9 +4,6 @@ using Kai.Universal.Sql.Clause.Dialect;
 using Kai.Universal.Sql.Result;
 using Kai.Universal.Sql.Type;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Kai.Universal.Sql.Handler {
     public class DmlHandler {
@@ -36,7 +33,6 @@ namespace Kai.Universal.Sql.Handler {
                         case DbmsType.FromSqlServer2012:
                             clause = new SqlServerClause();
                             break;
-                        case DbmsType.Default:
                         default:
                             clause = new QueryClause();
                             break;
@@ -77,10 +73,9 @@ namespace Kai.Universal.Sql.Handler {
             switch (mode) {
                 case SqlGeneratorMode.PreparedStatement:
                     return Clause.GetPreparedSql(modelInfo);
-                case SqlGeneratorMode.Statement:
                 default:
-                    if (Clause is LimitingResultClause) {
-                        LimitingResultClause limitingResultClause = (LimitingResultClause)Clause;
+                    var limitingResultClause = Clause as LimitingResultClause;
+                    if (limitingResultClause != null) {
                         switch (queryType) {
                             case QueryType.SelectPaging:
                                 return limitingResultClause.GetPagingSql(modelInfo);
@@ -90,8 +85,8 @@ namespace Kai.Universal.Sql.Handler {
                                 break;
                         }
                     }
-                    if (Clause is QueryClause) {
-                        QueryClause queryClause = (QueryClause)Clause;
+                    var queryClause = Clause as QueryClause;
+                    if (queryClause != null) {
                         switch (queryType) {
                             case QueryType.SelectAll:
                                 return queryClause.GetSelectAllSql();

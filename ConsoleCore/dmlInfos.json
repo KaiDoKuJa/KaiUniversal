@@ -1,0 +1,22 @@
+{
+  "dmlInfos": [
+    {
+      "id": "employeeByDirectSql",
+      "groupId": "sample",
+      "dmlType": "Select",
+      "sqlTemplate": "select EmployeeID,LastName,Region,Photo from Employees limit 1",
+      "columnWordCase": "UPPER_CAMEL",
+      "mapModelWordCase": "LOWER_CAMEL"
+    },
+    {
+      "id": "employeeByCfg",
+      "groupId": "sample",
+      "dmlType": "Select",
+      "columns": ["EmployeeID", "LastName"],
+      "columnWordCase": "UPPER_CAMEL",
+      "mapModelWordCase": "LOWER_CAMEL"
+    }
+
+
+  ]
+}

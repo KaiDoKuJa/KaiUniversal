@@ -1,8 +1,7 @@
-﻿using Kai.Universal.Text;
-using Kai.Universal.Data;
+﻿using Kai.Universal.Data;
+using Kai.Universal.Text;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
@@ -13,7 +12,7 @@ namespace Kai.Universal.Sql.Clause {
 
         protected override void NecessaryCheck() {
             if (base.IsEmptyColumns()) {
-                throw new Exception(NO_COLUMNS);
+                throw new ArgumentNullException(NO_COLUMNS);
             }
         }
 
@@ -57,9 +56,8 @@ namespace Kai.Universal.Sql.Clause {
             object model = modelInfo.Model;
             string[] cols = base.DmlInfo.Columns;
 
-            Dictionary<object, object> map = null;
-            if (model is Dictionary<object, object>) {
-                map = (Dictionary<object, object>)model;
+            var map = model as Dictionary<object, object>;
+            if (map != null) { 
                 isMapModel = true;
             }
             for (int i = 0; i < cols.Length; i++) {
@@ -89,9 +87,8 @@ namespace Kai.Universal.Sql.Clause {
          */
         protected void AppendPrepareProps(string[] cols, object model) {
             bool isMapModel = false;
-            Dictionary<object, object> map = null;
-            if (model is Dictionary<object, object>) {
-                map = (Dictionary<object, object>)model;
+            var map = model as Dictionary<object, object>;
+            if (map != null) {
                 isMapModel = true;
             }
             for (int i = 0; i < cols.Length; i++) {

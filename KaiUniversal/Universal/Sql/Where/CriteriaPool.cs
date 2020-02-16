@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Kai.Universal.Sql.Where {
 
     public class CriteriaPool {
-        private List<Criteria> criterias = new List<Criteria>();
+        private readonly List<Criteria> criterias = new List<Criteria>();
         private bool isCompleted = false; // 可增加重設屬性
         private StringBuilder sb = new StringBuilder();
 
@@ -23,7 +22,7 @@ namespace Kai.Universal.Sql.Where {
             return this;
         }
 
-        public void AddCritera(Criteria c) {
+        public void AddCriteria(Criteria c) {
             if (c != null) {
                 if (isCompleted) {
                     isCompleted = false;

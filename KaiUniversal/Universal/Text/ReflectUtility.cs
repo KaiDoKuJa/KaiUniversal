@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Kai.Universal.Util;
+using System;
 using System.Reflection;
-using System.Data;
 
 namespace Kai.Universal.Text {
 
@@ -8,94 +8,72 @@ namespace Kai.Universal.Text {
      * variable - all of the variable (property,field)
      * property - .Net property //public object A {get;set;}
      * field  - public variable //public object a;
-     * TODO:  private object 需考慮用set, get來處理!!  
-     * 
-     * 
-     * TODO : 用 #ifdef 的方式 來處理 field , methodinfo
-     * TODO : 新增 methodinfo 來抓取 GetXxx SetXxx
+     * methodinfo - GetXxx SetXxx
+     * 2020/2/22 : 預設不使用fieldInfo or methodInfo的判斷
      **/
     public class ReflectUtility {
 
         private ReflectUtility() { }
 
         public static void SetValue(object model, string variableName, object val) {
-            if (model == null || !String.IsNullOrWhiteSpace(variableName) || val == null) return;
+            if (model == null || variableName == null || "".Equals(variableName.Trim())
+                 || val == null || val == DBNull.Value) return;
             Type type = model.GetType();
             PropertyInfo property = type.GetProperty(variableName, BindingFlags.Instance | BindingFlags.Public);
             if (property != null) {
-                SetPropertyValue(property, model, val);
-            } else {
-                string lowerCase = TextUtility.ConvertWordCase(variableName, WordCase.UPPER_CAMEL, WordCase.LOWER_CAMEL);
-                FieldInfo field = type.GetField(lowerCase, BindingFlags.Instance | BindingFlags.Public);
-                if (field != null) {
-                    SetFieldValue(field, model, val);
-                }
-            }
-        }
-
-        // 須淘汰
-        // TODO : 確認GetValueString 傳入的沒問題，針對bool型態，JAVA沒使用GetValueString
-        private static void SetFieldValue(FieldInfo field, object model, object val) {
-            if (field.FieldType == typeof(string)) {
-                field.SetValue(model, GetValueString(val));
-            } else {
-                if (val != DBNull.Value) {
-                    field.SetValue(model, val);
-                }
+                try {
+                    SetPropertyValue(property, model, val);
+                } catch {}
             }
         }
 
         private static void SetPropertyValue(PropertyInfo property, object model, object val) {
-            if (property.PropertyType == typeof(string)) {
+            Type propertyType = property.PropertyType;
+            Type variableType = val.GetType();
+            if (variableType.Equals(propertyType) || propertyType.IsAssignableFrom(variableType)) { // 同型態
+                property.SetValue(model, val, null);
+            } else if (typeof(string).Equals(propertyType)) { // 標的屬性string
                 property.SetValue(model, GetValueString(val), null);
-            } else {
-                if (val != DBNull.Value) {
-                    property.SetValue(model, val, null);
-                }
+            } else if (typeof(string).Equals(variableType) && propertyType.IsEnum) { // 標的Enum 來源string
+                // TODO : val == "" or val is not really enum type
+                object val2Enum = Enum.Parse(propertyType, (string)val, true);
+                property.SetValue(model, val2Enum, null);
+            } else if (val != DBNull.Value) {
+                property.SetValue(model, val, null);
             }
         }
 
-        // TODO 在評估轉換的問題
         private static string GetValueString(object val) {
-            string result = "";
-
-            if (val.GetType() == Type.GetType("System.Boolean")) {
-                bool b = (bool)val;
-                if (b) {
-                    result = "1";
-                } else {
-                    result = "0";
-                }
-            } else if (val.GetType() == Type.GetType("System.DateTime")) {
+            Type valType = val.GetType();
+            if (Type.GetType("System.DateTime").Equals(valType)) {
                 DateTime dttm = (DateTime)val;
-                result = String.Format("{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}", dttm.Year, dttm.Month, dttm.Day, dttm.Hour, dttm.Minute, dttm.Second);
-            } else if (val.GetType() == Type.GetType("System.TimeSpan")) {
-                TimeSpan ts = (TimeSpan)val;
-                result = String.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
-            } else {
-                if (val.GetType() == Type.GetType("System.String")) {
-                    result = val.ToString();
-                }
+                return dttm.ToString(DateTimeUtility.ISO8601);
             }
-            return result;
+            
+            if (val is byte[]) {
+                return Convert.ToBase64String((byte[]) val);
+            }
+            
+            return val.ToString();
         }
-
 
         //用這個取帶java modelFetch 裡的getField, 因為 c# field/prop各自不同，java的部分要改名為var避免兩種混淆
-        public static bool HasVariable(Type type, string variableName, bool isFieldNameUpperCase = true) {
+        public static bool HasVariable(Type classOfT, string variableName, Type variableType, bool isFieldNameUpperCase = true) {
             bool result = false;
-
             string propertyName = isFieldNameUpperCase ? variableName : TextUtility.ConvertWordCase(variableName, WordCase.LOWER_CAMEL, WordCase.UPPER_CAMEL);
-            PropertyInfo property = type.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
-            if (property != null) {
+            PropertyInfo property = classOfT.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
+            if (property == null) return result;
+
+            Type propertyType = property.PropertyType;
+            if (variableType.Equals(propertyType) || propertyType.IsAssignableFrom(variableType)) { // 同型態
                 result = true;
-            } else {
-                string fieldName = !isFieldNameUpperCase ? variableName : TextUtility.ConvertWordCase(variableName, WordCase.UPPER_CAMEL, WordCase.LOWER_CAMEL);
-                FieldInfo field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.Public);
-                if (field != null) {
-                    result = true;
-                }
+            } else if (typeof(string).Equals(propertyType)) { // 標的屬性string
+                result = true;
+            } else if (typeof(string).Equals(variableType) && propertyType.IsEnum) { // 標的Enum 來源string
+                // not suuport Enum from int
+                result = true;
             }
+
             return result;
         }
 
@@ -106,7 +84,7 @@ namespace Kai.Universal.Text {
 
         public static object GetValue(object model, string variableName) {
             object refVal = null;
-            if (model == null || !String.IsNullOrWhiteSpace(variableName)) return null;
+            if (model == null || variableName == null || "".Equals(variableName.Trim())) return null;
             Type type = model.GetType();
             PropertyInfo property = type.GetProperty(variableName, BindingFlags.Instance | BindingFlags.Public);
             if (property != null) {
@@ -132,8 +110,7 @@ namespace Kai.Universal.Text {
                 || val is byte
                 || val is sbyte
                 || val is decimal
-                )
-            ? true : false;
+                );
+        }
     }
-}
 }

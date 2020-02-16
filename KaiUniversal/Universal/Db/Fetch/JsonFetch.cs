@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
+//#if NETSTANDARD2_0
+
+//#else 
+//using System.Web.Script.Serialization;
+//#endif
 using Kai.Universal.Text;
 using Kai.Universal.Data;
 
@@ -27,28 +32,60 @@ namespace Kai.Universal.Db.Fetch {
         }
 
         protected override void DoProcessDataReader(DbDataReader reader) {
+#if NETSTANDARD2_0
+#else
+            //JavaScriptSerializer serializer = new JavaScriptSerializer();
+#endif
             sb = new StringBuilder();
             sb.Append("[");
             int j = 0;
-            while (reader.Read()) { // j++;
-                if (j > 0) sb.Append(","); //太亂了，沒Stringjoiner很難寫
+            while (reader.Read()) {
+                if (j > 0) sb.Append(",");
                 sb.Append("{");
                 for (int i = 0; i < columnInfos.Count; i++) {
-                    if (i > 0) sb.Append(","); // ?? TODO :需驗證
+                    if (i > 0) sb.Append(",");
                     ColumnInfo columnInfo = columnInfos[i];
-                    String colName = columnInfo.ColName;
+                    string colName = columnInfo.ColName;
                     Type colType = columnInfo.ColType;
-                    object val = reader[colName];
-                    // 這個尚未翻譯
-                    // TODO :                 String val = ResultSetUtility.getJsonString(resultSet, colType, colName);
+                    string val = GetJsonString(reader[colName], colType);
+                    sb.Append(string.Format("\"{0}\":{1}", columnInfo.ModelName, val));
                 }
                 sb.Append("}");
+                j++;
             }
             sb.Append("]");
         }
 
         protected override void Abandon() {
             // do nothing
+        }
+
+        public static string GetJsonString(object val, Type valueType) {
+            string jsonStringTemplate = "\"{0}\"";
+            if (valueType == typeof(bool)) {
+                if ((bool)val == true) {
+                    return "true";
+                }
+                return "false";
+            } else if (ReflectUtility.IsNumberType(val)) {
+                return val.ToString();
+            } else if (val is byte[]) { // TODO : is all of blob~binary
+                // JSON spec is not hex words
+                return string.Format(jsonStringTemplate, HexUtility.BytesToHex((byte[]) val));
+            } else { // clob can use this?
+                return string.Format(jsonStringTemplate, EscapeJsonQuote(val.ToString()));
+            }
+            // TODO : datetime 
+            
+        }
+
+        private static string EscapeJsonQuote(string s) {
+            if (s == null) return "";
+            if (!s.Contains("\"")) {
+                return s;
+            } else {
+                return s.Replace("\"", "\\\"");
+            }
         }
 
     }

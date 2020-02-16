@@ -1,96 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{19B2B3AB-5F06-44CE-B211-AA30551786DF}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworks>netstandard2.0;net45;net35</TargetFrameworks>
     <RootNamespace>Kai</RootNamespace>
-    <AssemblyName>KaiUniversal</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <Version>2.0.2</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>KaiDoKuJa</Authors>
+    <Company>KaiDoKuGroup</Company>
+    <PackageId>Kai.Universal</PackageId>
+    <Product>Kai.Universal</Product>
+    <Description>KaiUniversal is an ORM framework with no dependency.</Description>
+    <RepositoryUrl>https://bitbucket.org/KaiDoKuJa/kaiuniversal</RepositoryUrl>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.Data.SqlClient">
+      <Version>1.1.1</Version>
+    </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Universal\Crypto\SimpleAesCrypto.cs" />
-    <Compile Include="Universal\Crypto\Cryptology.cs" />
-    <Compile Include="Universal\Data\ColumnInfo.cs" />
-    <Compile Include="Universal\Data\DataReaderUtility.cs" />
-    <Compile Include="Universal\Data\DmlInfo.cs" />
-    <Compile Include="Universal\Data\ModelInfo.cs" />
-    <Compile Include="Universal\Data\PagerData.cs" />
-    <Compile Include="Universal\Db\Fetch\AbstractFetchHandler.cs" />
-    <Compile Include="Universal\Db\Fetch\JsonFetch.cs" />
-    <Compile Include="Universal\Db\Fetch\DataTableFetch.cs" />
-    <Compile Include="Universal\Db\Fetch\MapDataFetch.cs" />
-    <Compile Include="Universal\Db\Fetch\ModelFetch.cs" />
-    <Compile Include="Universal\Db\SimpleDao.cs" />
-    <Compile Include="Universal\Db\SimpleDataSource.cs" />
-    <Compile Include="Universal\Db\SimpleDbcUtility.cs" />
-    <Compile Include="Universal\Db\SqlServerDao.cs" />
-    <Compile Include="Universal\KaiDummyApi.cs" />
-    <Compile Include="Universal\KaiOnlyApi.cs" />
-    <Compile Include="Universal\KaiUnimplementApi.cs" />
-    <Compile Include="Universal\Sql\Clause\AbstractSqlClause.cs" />
-    <Compile Include="Universal\Sql\Clause\Dialect\LimitingResultClause.cs" />
-    <Compile Include="Universal\Sql\Clause\Dialect\SqlServerClause.cs" />
-    <Compile Include="Universal\Sql\Clause\QueryClause.cs" />
-    <Compile Include="Universal\Sql\Clause\DeleteClause.cs" />
-    <Compile Include="Universal\Sql\Clause\UpdateClause.cs" />
-    <Compile Include="Universal\Sql\Clause\OrmUtility.cs" />
-    <Compile Include="Universal\Sql\Handler\DmlHandler.cs" />
-    <Compile Include="Universal\Sql\Clause\InsertClause.cs" />
-    <Compile Include="Universal\Sql\Result\SqlGeneratorMode.cs" />
-    <Compile Include="Universal\Sql\Text\SpecialString.cs" />
-    <Compile Include="Universal\Sql\Type\DbmsType.cs" />
-    <Compile Include="Universal\Sql\Type\QueryType.cs" />
-    <Compile Include="Universal\Sql\Type\DmlType.cs" />
-    <Compile Include="Universal\Sql\Where\Criteria.cs" />
-    <Compile Include="Universal\Sql\Where\CriteriaPool.cs" />
-    <Compile Include="Universal\Sql\Where\CriteriaType.cs" />
-    <Compile Include="Universal\Sql\Where\CriteriaUtility.cs" />
-    <Compile Include="Universal\Text\FileUtility.cs" />
-    <Compile Include="Universal\Text\HexUtility.cs" />
-    <Compile Include="Universal\Text\ReflectLevel.cs" />
-    <Compile Include="Universal\Text\ReflectUtility.cs" />
-    <Compile Include="Universal\Text\SqlTextUtility.cs" />
-    <Compile Include="Universal\Text\TextUtility.cs" />
-    <Compile Include="Universal\Text\WordCase.cs" />
-    <Compile Include="Universal\Util\CloseUtility.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="Universal\Handle\" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Universal\Sql\Where\Replacement.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

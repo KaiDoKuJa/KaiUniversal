@@ -83,15 +83,15 @@ namespace Kai.Universal.Sql.Where {
         }
         public static string GetCriteriaSql(Criteria c) {
             StringBuilder sb = new StringBuilder();
-            switch (c.criteriaType) {
+            switch (c.CriteriaType) {
                 case CriteriaType.Direct:
-                    sb.Append(c.colValue);
+                    sb.Append(c.ColValue);
                     break;
 
                 case CriteriaType.IsNull:
                 case CriteriaType.IsNotNull:
-                    sb.Append(c.colName);
-                    sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.criteriaType));
+                    sb.Append(c.ColName);
+                    sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.CriteriaType));
                     break;
 
                 case CriteriaType.Equal:
@@ -100,18 +100,19 @@ namespace Kai.Universal.Sql.Where {
                 case CriteriaType.LessThanEqual:
                 case CriteriaType.GreaterThan:
                 case CriteriaType.GreaterThanEqual:
-                    sb.Append(c.colName);
-                    sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.criteriaType));
-                    sb.Append(CriteriaUtility.GetCriteriaValue(c.colValue));
+                    sb.Append(c.ColName);
+                    sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.CriteriaType));
+                    sb.Append(CriteriaUtility.GetCriteriaValue(c.ColValue));
                     break;
 
                 case CriteriaType.Like:
                 case CriteriaType.NotLike:
-                    if (c.colValue is string) {
-                        sb.Append(c.colName);
-                        sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.criteriaType));
+                    var c1 = c.ColValue as string;
+                    if (c1 != null) {
+                        sb.Append(c.ColName);
+                        sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.CriteriaType));
                         sb.Append("'%");
-                        sb.Append(((string)c.colValue).Replace("'", "''"));
+                        sb.Append(c1.Replace("'", "''"));
                         sb.Append("%'");
                     } else {
                         throw new ArgumentException(LIKE_PATTERN_ERROR);
@@ -120,11 +121,12 @@ namespace Kai.Universal.Sql.Where {
 
                 case CriteriaType.LeftLike:
                 case CriteriaType.NotLeftLike:
-                    if (c.colValue is string) {
-                        sb.Append(c.colName);
-                        sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.criteriaType));
+                    var c2 = c.ColValue as string;
+                    if (c2 != null) {
+                        sb.Append(c.ColName);
+                        sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.CriteriaType));
                         sb.Append("'%");
-                        sb.Append(((string)c.colValue).Replace("'", "''"));
+                        sb.Append(c2.Replace("'", "''"));
                         sb.Append("'");
                     } else {
                         throw new ArgumentException(LIKE_PATTERN_ERROR);
@@ -133,11 +135,12 @@ namespace Kai.Universal.Sql.Where {
 
                 case CriteriaType.RightLike:
                 case CriteriaType.NotRightLike:
-                    if (c.colValue is string) {
-                        sb.Append(c.colName);
-                        sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.criteriaType));
+                    var c3 = c.ColValue as string;
+                    if (c3 != null) {
+                        sb.Append(c.ColName);
+                        sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.CriteriaType));
                         sb.Append("'");
-                        sb.Append(((string)c.colValue).Replace("'", "''"));
+                        sb.Append(c3.Replace("'", "''"));
                         sb.Append("%'");
                     } else {
                         throw new ArgumentException(LIKE_PATTERN_ERROR);
@@ -145,16 +148,19 @@ namespace Kai.Universal.Sql.Where {
                     break;
 
                 case CriteriaType.In:
-                    sb.Append(c.colName);
-                    sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.criteriaType));
-                    if (c.colValues != null && c.colValues.Length > 0) {
+                    sb.Append(c.ColName);
+                    sb.Append(CriteriaUtility.GetCriterialTypeFormula(c.CriteriaType));
+                    if (c.ColValues != null && c.ColValues.Length > 0) {
                         sb.Append("(");
-                        sb.Append(GetCriteriaValues(c.colValues));
+                        sb.Append(GetCriteriaValues(c.ColValues));
                         sb.Append(")");
-                    } else if (c.colValue is SpecialString) {
-                        sb.Append(((SpecialString) c.colValue).Value);
-                    } else if (c.colValue is string) {
-                        sb.Append(c.colValue);
+                    } else if (c.ColValue != null) {
+                        var specialString = c.ColValue as SpecialString;
+                        if (specialString != null) {
+                            sb.Append(specialString.Value);
+                        } else if (c.ColValue is string) {
+                            sb.Append(c.ColValue);
+                        }
                     }
                     break;
                 default:

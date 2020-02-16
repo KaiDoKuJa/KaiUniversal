@@ -2,13 +2,14 @@ using System;
 namespace Kai.Universal.Sql.Where {
 
     /// <summary>
-    /// v1.3.2016.7.14
+    /// v1.4.2020.2.22
     /// </summary>
     public class Criteria {
-        public string colName;
-        public CriteriaType criteriaType;
-        public object colValue;
-        public object[] colValues;
+
+        public string ColName { get; set; }
+        public CriteriaType CriteriaType { get; set; }
+        public object ColValue { get; set; }
+        public object[] ColValues { get; set; }
 
         /// <summary>
         /// 直接加條件
@@ -20,8 +21,8 @@ namespace Kai.Universal.Sql.Where {
             }
 
             Criteria c = new Criteria();
-            c.colValue = condition;
-            c.criteriaType = CriteriaType.Direct;
+            c.ColValue = condition;
+            c.CriteriaType = CriteriaType.Direct;
             return c;
         }
 
@@ -37,9 +38,9 @@ namespace Kai.Universal.Sql.Where {
             }
 
             Criteria c = new Criteria();
-            c.colName = col;
-            c.colValue = val;
-            c.criteriaType = criteriaType;
+            c.ColName = col;
+            c.ColValue = val;
+            c.CriteriaType = criteriaType;
             return c;
         }
 
@@ -49,33 +50,33 @@ namespace Kai.Universal.Sql.Where {
             }
 
             Criteria c = new Criteria();
-            c.colName = col;
-            c.colValues = vals;
-            c.criteriaType = CriteriaType.In;
+            c.ColName = col;
+            c.ColValues = vals;
+            c.CriteriaType = CriteriaType.In;
             return c;
         }
 
         public static Criteria AndEmptyCondition(string col) {
             Criteria c = new Criteria();
-            c.colName = col;
-            c.criteriaType = CriteriaType.Equal;
-            c.colValue = "";
+            c.ColName = col;
+            c.CriteriaType = CriteriaType.Equal;
+            c.ColValue = "";
             return c;
         }
 
         // v1.3.2016.7.14
         public static Criteria AndIsNullCondition(string col) {
             Criteria c = new Criteria();
-            c.colName = col;
-            c.criteriaType = CriteriaType.IsNull;
+            c.ColName = col;
+            c.CriteriaType = CriteriaType.IsNull;
             return c;
         }
 
         // v1.3.2016.7.14
         public static Criteria AndIsNotNullCondition(string col) {
             Criteria c = new Criteria();
-            c.colName = col;
-            c.criteriaType = CriteriaType.IsNotNull;
+            c.ColName = col;
+            c.CriteriaType = CriteriaType.IsNotNull;
             return c;
         }
 
@@ -85,9 +86,9 @@ namespace Kai.Universal.Sql.Where {
             }
             
             Criteria c = new Criteria();
-            c.colName = col;
-            c.colValue = val;
-            c.criteriaType = CriteriaType.Like;
+            c.ColName = col;
+            c.ColValue = val;
+            c.CriteriaType = CriteriaType.Like;
             return c;
         }
 
@@ -97,9 +98,9 @@ namespace Kai.Universal.Sql.Where {
             }
 
             Criteria c = new Criteria();
-            c.colName = col;
-            c.colValue = val;
-            c.criteriaType = CriteriaType.LeftLike;
+            c.ColName = col;
+            c.ColValue = val;
+            c.CriteriaType = CriteriaType.LeftLike;
             return c;
         }
 
@@ -109,9 +110,9 @@ namespace Kai.Universal.Sql.Where {
             }
 
             Criteria c = new Criteria();
-            c.colName = col;
-            c.colValue = val;
-            c.criteriaType = CriteriaType.RightLike;
+            c.ColName = col;
+            c.ColValue = val;
+            c.CriteriaType = CriteriaType.RightLike;
             return c;
         }
     }

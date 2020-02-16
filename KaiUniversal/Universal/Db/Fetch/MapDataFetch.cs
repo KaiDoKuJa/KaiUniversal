@@ -9,7 +9,7 @@ namespace Kai.Universal.Db.Fetch {
     public class MapDataFetch : AbstractFetchHandler {
 
         private List<ColumnInfo> columnInfos;
-        private List<Dictionary<string, object>> datas = new List<Dictionary<string, object>>();
+        private readonly List<Dictionary<string, object>> datas = new List<Dictionary<string, object>>();
         public DmlInfo DmlInfo { get; set; }
 
         public List<Dictionary<string, object>> GetResult() {
@@ -30,7 +30,6 @@ namespace Kai.Universal.Db.Fetch {
                 Dictionary<string, object> map = new Dictionary<string, object>();
                 foreach (ColumnInfo columnInfo in columnInfos) {
                     String colName = columnInfo.ColName;
-                    Type colType = columnInfo.ColType;
                     map.Add(colName, reader[colName]);
                 }
                 datas.Add(map);

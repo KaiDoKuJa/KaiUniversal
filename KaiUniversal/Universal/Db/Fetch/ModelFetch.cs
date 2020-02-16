@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Kai.Universal.Data;
+using Kai.Universal.Text;
 using System.Collections.Generic;
 using System.Data.Common;
-using Kai.Universal.Text;
-using Kai.Universal.Data;
 
 namespace Kai.Universal.Db.Fetch {
 
     public class ModelFetch<T> : AbstractFetchHandler where T : new() {
 
         private List<ColumnInfo> columnInfos;
-        private List<T> datas = new List<T>();
+        private readonly List<T> datas = new List<T>();
         public DmlInfo DmlInfo { get; set; }
 
         public List<T> GetResult() {
@@ -20,10 +19,10 @@ namespace Kai.Universal.Db.Fetch {
             if (DmlInfo == null) DmlInfo = new DmlInfo();
             Dictionary<string, string> customerMapping = DmlInfo.CustomerMapping;
             WordCase columnWordCase = DmlInfo.ColumnWordCase;
-            WordCase mapModelWordCase = DmlInfo.MapModelWordCase;
+            WordCase mapModelWordCase = WordCase.UPPER_CAMEL;
 
-            List<ColumnInfo> columnInfos = DataReaderUtility.GetAllColumnInfo(reader, customerMapping, columnWordCase, mapModelWordCase);
-            this.columnInfos = ReduceColumn(columnInfos);
+            List<ColumnInfo> columnInfos0 = DataReaderUtility.GetAllColumnInfo(reader, customerMapping, columnWordCase, mapModelWordCase);
+            this.columnInfos = ReduceColumn(columnInfos0);
         }
 
         protected override void DoProcessDataReader(DbDataReader reader) {
@@ -31,7 +30,6 @@ namespace Kai.Universal.Db.Fetch {
                 T t = new T();
                 foreach (ColumnInfo columnInfo in columnInfos) {
                     string colName = columnInfo.ColName;
-                    Type colType = columnInfo.ColType;
                     object val = reader[colName];
                     ReflectUtility.SetValue(t, columnInfo.ModelName, val);
                 }
@@ -48,13 +46,10 @@ namespace Kai.Universal.Db.Fetch {
 
         private List<ColumnInfo> ReduceColumn(List<ColumnInfo> columnInfos) {
             List<ColumnInfo> reducedColumns = new List<ColumnInfo>();
-            List<ColumnInfo> removeItems = new List<ColumnInfo>();
             foreach (ColumnInfo columnInfo in columnInfos) {
-                try {
-                    if (ReflectUtility.HasVariable(columnInfo.ColType, columnInfo.ModelName)) {
-                        reducedColumns.Add(columnInfo);
-                    }
-                } catch { }
+                if (ReflectUtility.HasVariable(typeof(T), columnInfo.ModelName, columnInfo.ColType)) {
+                    reducedColumns.Add(columnInfo);
+                }
             }
             return reducedColumns;
         }

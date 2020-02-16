@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
 
 namespace Kai.Universal.Data {
     public class DataReaderUtility {
@@ -14,7 +12,7 @@ namespace Kai.Universal.Data {
             List<ColumnInfo> result = new List<ColumnInfo>();
             List<string> chkColNames = new List<string>();
 
-            for (int i = 1; i <= reader.FieldCount; i++) {
+            for (int i = 0; i < reader.FieldCount; i++) {
                 String sqlColName = reader.GetName(i);
                 if (chkColNames.Contains(sqlColName)) {
                     continue;
@@ -38,7 +36,7 @@ namespace Kai.Universal.Data {
             List<ColumnInfo> result = new List<ColumnInfo>();
             List<string> colNames = new List<string>();
 
-            for (int i = 1; i <= reader.FieldCount; i++) {
+            for (int i = 0; i < reader.FieldCount; i++) {
                 String sqlColName = reader.GetName(i);
                 if (colNames.Contains(sqlColName)) {
                     continue;

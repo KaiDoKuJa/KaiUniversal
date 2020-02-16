@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data;
 using System.Data.Common;
-using Kai.Universal.Text;
-using Kai.Universal.Data;
-using System.Data;
 
 namespace Kai.Universal.Db.Fetch {
 
     public class DataTableFetch : AbstractFetchHandler {
 
-        private DataTable datas = new DataTable();
+        private readonly DataTable datas = new DataTable();
 
         public DataTable GetResult() {
             return datas;

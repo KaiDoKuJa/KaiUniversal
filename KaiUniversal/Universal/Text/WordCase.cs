@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kai.Universal.Text {
+﻿namespace Kai.Universal.Text {
 
     public enum WordCase {
         LOWER_CAMEL,

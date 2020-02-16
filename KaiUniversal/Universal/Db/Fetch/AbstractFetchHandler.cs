@@ -1,11 +1,7 @@
-﻿using Kai.Universal.Data;
-using Kai.Universal.Util;
+﻿using Kai.Universal.Util;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
 
 namespace Kai.Universal.Db.Fetch {
     public abstract class AbstractFetchHandler {
@@ -47,9 +43,9 @@ namespace Kai.Universal.Db.Fetch {
                 // load Data
                 this.DoProcessDataReader(reader);
 
-            } catch (Exception e) {
+            } catch  {
                 this.Abandon();
-                throw e;
+                throw ;
             } finally {
                 CloseUtility.CloseDataReader(ref reader);
                 CloseUtility.DisposeSqlCommmand(ref command);

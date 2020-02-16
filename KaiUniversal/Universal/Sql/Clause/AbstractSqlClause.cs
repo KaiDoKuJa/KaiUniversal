@@ -2,11 +2,8 @@
 using Kai.Universal.Text;
 using Kai.Universal.Data;
 using Kai.Universal.Sql.Type;
-using Kai.Universal.Sql.Where;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
@@ -18,15 +15,14 @@ namespace Kai.Universal.Sql.Clause {
         public static readonly string TEXT_AND_WITH_SPACE = " and ";
         public static readonly string NO_DML_INFO = "no DmlInfo";
 
-        private DbmsType dbmsType = DbmsType.Default;
-        public DbmsType DbmsType { get => dbmsType; set => dbmsType = value; }
+        public DbmsType DbmsType { get; set; }
         public DmlInfo DmlInfo { get; set; }
 
         protected StringBuilder sb;
 
         private void BaseNecessaryCheck() {
             if (this.IsEmptyTableName()) {
-                throw new Exception(NO_TABLE_NAME);
+                throw new ArgumentNullException(NO_TABLE_NAME);
             }
             NecessaryCheck();
         }
@@ -70,7 +66,7 @@ namespace Kai.Universal.Sql.Clause {
                 sb.Append(sqlTemplate);
             }
 
-            if (whereSql != null && !"".Equals(whereSql)) {
+            if (whereSql != null && !"".Equals(whereSql.Trim())) {
                 sb.Append(TEXT_AND_WITH_SPACE);
                 sb.Append(whereSql);
             }
@@ -78,18 +74,14 @@ namespace Kai.Universal.Sql.Clause {
         }
 
         public string GetSql(ModelInfo modelInfo) {
-            if (DmlInfo == null) throw new Exception(NO_DML_INFO);
+            if (DmlInfo == null) throw new ArgumentNullException(NO_DML_INFO);
             if (UseSqlTemplate(DmlInfo.SqlTemplate)) return GenDirectSql(modelInfo);
             BaseNecessaryCheck();
             return GenSql(modelInfo);
         }
 
         public string GetPreparedSql(ModelInfo modelInfo) {
-            if (DmlInfo == null) throw new Exception(NO_DML_INFO);
-            // TODO : throw unsupported?  this is not enhancement
-            if (UseSqlTemplate(DmlInfo.SqlTemplate)) return GenDirectSql(modelInfo);
-            BaseNecessaryCheck();
-            return GenPreparedSql(modelInfo);
+            throw new NotImplementedException("not implement");
         }
 
         public string GetLastSql() {
@@ -99,7 +91,7 @@ namespace Kai.Universal.Sql.Clause {
         }
 
         public bool IsEmptyTableName() {
-            return (DmlInfo.TableName == null || "".Equals(DmlInfo.TableName)) ? true : false;
+            return (DmlInfo.TableName == null || "".Equals(DmlInfo.TableName));
         }
 
         public bool IsEmptyColumns() {
@@ -119,7 +111,7 @@ namespace Kai.Universal.Sql.Clause {
         }
 
         protected bool UseSqlTemplate(string sqlTemplate) {
-            return (sqlTemplate == null || "".Equals(sqlTemplate.Trim())) ? false : true;
+            return (sqlTemplate != null && !"".Equals(sqlTemplate.Trim()));
         }
 
         protected void AppendCols(string[] cols, char delimiter) {
@@ -143,7 +135,7 @@ namespace Kai.Universal.Sql.Clause {
                         sb.Append(string.Format("{0}", propValue));
                     } else {
                         // Kai : 未來建立exception時可由上層抓取colName
-                        throw new Exception("propValue is not string for special column!");
+                        throw new ArgumentException("propValue is not string for special column!", "propValue");
                     }
                 }
             }
@@ -160,7 +152,7 @@ namespace Kai.Universal.Sql.Clause {
                 string propValueString = OrmUtility.GetSqlString(propValue, DmlInfo.UseUnicodePrefix);
                 sb.Append(propValueString);
             } else {
-                switch (dbmsType) {
+                switch (DbmsType) {
                     // oracle : hextoraw('453d7a34')
                     case DbmsType.FromSqlServer2005:
                     case DbmsType.FromSqlServer2012:
@@ -169,7 +161,7 @@ namespace Kai.Universal.Sql.Clause {
                         break;
                     case DbmsType.Default:
                     default:
-                        throw new Exception("byte array need select one db type");
+                        throw new ArgumentException("byte array need select one db type");
                 }
             }
         }

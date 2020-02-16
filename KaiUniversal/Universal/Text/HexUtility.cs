@@ -4,9 +4,13 @@ using System.Text;
 namespace Kai.Universal.Text {
 
     public class HexUtility {
-        // java version code :
+
+        private HexUtility() { }
+
+        // KaiJava version code :
         static readonly char[] HEXES = "0123456789ABCDEF".ToCharArray();
-        // java version code :
+
+        // KaiJava version code :
         public static string BytesToHexJ(byte[] bytes) {
             if (bytes == null) {
                 return null;
@@ -84,7 +88,6 @@ namespace Kai.Universal.Text {
             i = 0;
             int t2 = val;
             int number = 1;
-            remainder = 0;
             while (t2 > 0) {
                 remainder = t2 % 2;
                 t2 = t2 / 2;

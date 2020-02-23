@@ -1,5 +1,7 @@
 ﻿using Kai.Universal.Util;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Kai.Universal.Text {
@@ -60,7 +62,7 @@ namespace Kai.Universal.Text {
         //用這個取帶java modelFetch 裡的getField, 因為 c# field/prop各自不同，java的部分要改名為var避免兩種混淆
         public static bool HasVariable(Type classOfT, string variableName, Type variableType, bool isFieldNameUpperCase = true) {
             bool result = false;
-            string propertyName = isFieldNameUpperCase ? variableName : TextUtility.ConvertWordCase(variableName, WordCase.LOWER_CAMEL, WordCase.UPPER_CAMEL);
+            string propertyName = isFieldNameUpperCase ? variableName : TextUtility.ConvertWordCase(variableName, WordCase.LowerCamel, WordCase.UpperCamel);
             PropertyInfo property = classOfT.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
             if (property == null) return result;
 
@@ -90,13 +92,27 @@ namespace Kai.Universal.Text {
             if (property != null) {
                 refVal = property.GetValue(model, null);
             } else {
-                string lowerCase = TextUtility.ConvertWordCase(variableName, WordCase.UPPER_CAMEL, WordCase.LOWER_CAMEL);
+                string lowerCase = TextUtility.ConvertWordCase(variableName, WordCase.UpperCamel, WordCase.LowerCamel);
                 FieldInfo field = model.GetType().GetField(lowerCase, BindingFlags.Instance | BindingFlags.Public);
                 if (field != null) {
                     refVal = field.GetValue(model);
                 }
             }
             return refVal;
+        }
+
+        public static bool IsList(object o) {
+            if (o == null) return false;
+            return o is IList &&
+                   o.GetType().IsGenericType &&
+                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
+        }
+
+        public static bool IsDictionary(object o) {
+            if (o == null) return false;
+            return o is IDictionary &&
+                   o.GetType().IsGenericType &&
+                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
         }
 
         public static bool IsNumberType(object val) {

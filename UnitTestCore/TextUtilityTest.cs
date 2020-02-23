@@ -9,37 +9,37 @@ namespace UnitTestCore {
 
         [TestMethod]
         public void ConvertWordCase() {
-            string r = TextUtility.ConvertWordCase("abcBcd", WordCase.LOWER_CAMEL, WordCase.LOWER_HYPHEN);
+            string r = TextUtility.ConvertWordCase("abcBcd", WordCase.LowerCamel, WordCase.LowerHyphen);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LOWER_CAMEL, WordCase.LOWER_UNDERSCORE);
+            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LowerCamel, WordCase.LowerUnderscore);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LOWER_CAMEL, WordCase.UPPER_CAMEL);
+            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LowerCamel, WordCase.UpperCamel);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LOWER_CAMEL, WordCase.UPPER_HYPHEN);
+            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LowerCamel, WordCase.UpperHyphen);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LOWER_CAMEL, WordCase.UPPER_UNDERSCORE);
-            Debug.WriteLine(r);
-            Debug.WriteLine("---");
-            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UPPER_CAMEL, WordCase.LOWER_HYPHEN);
-            Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UPPER_CAMEL, WordCase.LOWER_UNDERSCORE);
-            Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UPPER_CAMEL, WordCase.LOWER_CAMEL);
-            Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UPPER_CAMEL, WordCase.UPPER_HYPHEN);
-            Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UPPER_CAMEL, WordCase.UPPER_UNDERSCORE);
+            r = TextUtility.ConvertWordCase("abcBcd", WordCase.LowerCamel, WordCase.UpperUnderscore);
             Debug.WriteLine(r);
             Debug.WriteLine("---");
-            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UPPER_UNDERSCORE, WordCase.LOWER_HYPHEN);
+            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UpperCamel, WordCase.LowerHyphen);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UPPER_UNDERSCORE, WordCase.LOWER_UNDERSCORE);
+            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UpperCamel, WordCase.LowerUnderscore);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UPPER_UNDERSCORE, WordCase.LOWER_CAMEL);
+            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UpperCamel, WordCase.LowerCamel);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UPPER_UNDERSCORE, WordCase.UPPER_HYPHEN);
+            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UpperCamel, WordCase.UpperHyphen);
             Debug.WriteLine(r);
-            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UPPER_UNDERSCORE, WordCase.UPPER_CAMEL);
+            r = TextUtility.ConvertWordCase("ABcBcd", WordCase.UpperCamel, WordCase.UpperUnderscore);
+            Debug.WriteLine(r);
+            Debug.WriteLine("---");
+            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UpperUnderscore, WordCase.LowerHyphen);
+            Debug.WriteLine(r);
+            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UpperUnderscore, WordCase.LowerUnderscore);
+            Debug.WriteLine(r);
+            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UpperUnderscore, WordCase.LowerCamel);
+            Debug.WriteLine(r);
+            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UpperUnderscore, WordCase.UpperHyphen);
+            Debug.WriteLine(r);
+            r = TextUtility.ConvertWordCase("A_BC_BCD", WordCase.UpperUnderscore, WordCase.UpperCamel);
             Debug.WriteLine(r);
         }
 

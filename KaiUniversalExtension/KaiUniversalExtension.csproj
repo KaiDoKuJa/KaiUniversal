@@ -6,11 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Resource\" />
-    <Folder Include="Universal\Service\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\KaiUniversal\KaiUniversal.csproj" />
   </ItemGroup>
 

@@ -8,6 +8,13 @@ using System.Data.SqlClient;
 namespace Kai.Universal.Db {
     public class SqlServerDao : SimpleDao {
 
+        public SqlServerDao() { }
+        public SqlServerDao(string connectionString) {
+            var ds = new SimpleDataSource();
+            ds.ConnectionString = connectionString;
+            this.DataSource = ds;
+        }
+
         public override DbConnection GetConnection() {
             return new SqlConnection(DataSource.ConnectionString);
         }

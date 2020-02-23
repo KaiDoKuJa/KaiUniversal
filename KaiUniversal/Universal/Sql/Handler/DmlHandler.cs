@@ -15,16 +15,16 @@ namespace Kai.Universal.Sql.Handler {
             this.Clause = clause;
         }
 
-        public static DmlHandler createHandler(DmlInfo dmlInfo) {
-            return createHandler(DbmsType.Default, dmlInfo);
+        public static DmlHandler CreateHandler(DmlInfo dmlInfo) {
+            return CreateHandler(DbmsType.Default, dmlInfo);
         }
 
-        public static DmlHandler createHandler(DbmsType dbmsType, DmlInfo dmlInfo) {
-            AbstractSqlClause clause = createClause(dbmsType, dmlInfo);
+        public static DmlHandler CreateHandler(DbmsType dbmsType, DmlInfo dmlInfo) {
+            AbstractSqlClause clause = CreateClause(dbmsType, dmlInfo);
             return new DmlHandler(clause);
         }
 
-        private static AbstractSqlClause createClause(DbmsType dbmsType, DmlInfo dmlInfo) {
+        private static AbstractSqlClause CreateClause(DbmsType dbmsType, DmlInfo dmlInfo) {
             AbstractSqlClause clause = null;
             switch (dmlInfo.DmlType) {
                 case DmlType.Select:
@@ -55,7 +55,7 @@ namespace Kai.Universal.Sql.Handler {
             return clause;
         }
 
-        public String getSql(ModelInfo modelInfo) {
+        public string GetSql(ModelInfo modelInfo) {
             if (modelInfo == null) return Clause.GetSql(null);
             SqlGeneratorMode mode = modelInfo.Mode;
             switch (mode) {
@@ -67,7 +67,7 @@ namespace Kai.Universal.Sql.Handler {
             }
         }
 
-        public String getSql(QueryType queryType, ModelInfo modelInfo) {
+        public string GetSql(QueryType queryType, ModelInfo modelInfo) {
             if (modelInfo == null) return Clause.GetSql(null);
             SqlGeneratorMode mode = modelInfo.Mode;
             switch (mode) {

@@ -14,8 +14,8 @@ namespace Kai.Universal.Data {
         public string GroupBy { get; set; }
         public string SqlTemplate { get; set; }
 
-        public WordCase ColumnWordCase { get; set; } = WordCase.UPPER_UNDERSCORE;
-        public WordCase MapModelWordCase { get; set; } = WordCase.UPPER_UNDERSCORE;
+        public WordCase ColumnWordCase { get; set; } = WordCase.UpperCamel;
+        public WordCase MapModelWordCase { get; set; } = WordCase.UpperCamel;
         public Dictionary<string, string> CustomerMapping { get; set; } // customer colName -> modelName
 
         public bool UseUnicodePrefix { get; set; } = false;

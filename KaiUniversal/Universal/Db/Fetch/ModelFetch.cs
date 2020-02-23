@@ -19,7 +19,7 @@ namespace Kai.Universal.Db.Fetch {
             if (DmlInfo == null) DmlInfo = new DmlInfo();
             Dictionary<string, string> customerMapping = DmlInfo.CustomerMapping;
             WordCase columnWordCase = DmlInfo.ColumnWordCase;
-            WordCase mapModelWordCase = WordCase.UPPER_CAMEL;
+            WordCase mapModelWordCase = WordCase.UpperCamel;
 
             List<ColumnInfo> columnInfos0 = DataReaderUtility.GetAllColumnInfo(reader, customerMapping, columnWordCase, mapModelWordCase);
             this.columnInfos = ReduceColumn(columnInfos0);

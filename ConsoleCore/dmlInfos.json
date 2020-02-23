@@ -1,7 +1,7 @@
 {
   "dmlInfos": [
     {
-      "id": "employeeByDirectSql",
+      "dmlId": "employeeByDirectSql",
       "groupId": "sample",
       "dmlType": "Select",
       "sqlTemplate": "select EmployeeID,LastName,Region,Photo from Employees limit 1",
@@ -9,7 +9,7 @@
       "mapModelWordCase": "LOWER_CAMEL"
     },
     {
-      "id": "employeeByCfg",
+      "dmlId": "employeeByCfg",
       "groupId": "sample",
       "dmlType": "Select",
       "columns": ["EmployeeID", "LastName"],

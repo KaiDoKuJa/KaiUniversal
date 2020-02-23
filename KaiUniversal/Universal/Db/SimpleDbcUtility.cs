@@ -48,8 +48,8 @@ namespace Kai.Universal.Db {
 
         public static List<T> GetData0<T>(DbConnection connection, int commandTimeout, string sql) where T : new() {
             DmlInfo dmlInfo = new DmlInfo();
-            dmlInfo.ColumnWordCase = WordCase.UPPER_UNDERSCORE;
-            dmlInfo.MapModelWordCase = WordCase.LOWER_CAMEL;
+            dmlInfo.ColumnWordCase = WordCase.UpperUnderscore;
+            dmlInfo.MapModelWordCase = WordCase.LowerCamel;
 
             ModelFetch<T> fetch = new ModelFetch<T>();
             fetch.CommandTimeout = commandTimeout;
@@ -83,11 +83,11 @@ namespace Kai.Universal.Db {
         public static PagerData<Dictionary<string, object>> GetPagerMapData(DbConnection connection, DmlHandler handler, ModelInfo modelInfo) {
             PagerData<Dictionary<string, object>> pagerData = new PagerData<Dictionary<string, object>>();
             // select count
-            int totalCount = GetSelectCount(connection, handler.getSql(QueryType.SelectCnt, modelInfo));
+            int totalCount = GetSelectCount(connection, handler.GetSql(QueryType.SelectCnt, modelInfo));
             pagerData.SelectCount = totalCount;
             if (totalCount > 0) {
                 // select paging sql
-                handler.getSql(QueryType.SelectPaging, modelInfo);
+                handler.GetSql(QueryType.SelectPaging, modelInfo);
                 List<Dictionary<string, object>> datas = GetMapData(connection, handler);
                 pagerData.Datas = datas;
                 // other info

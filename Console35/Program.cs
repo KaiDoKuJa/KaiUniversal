@@ -28,7 +28,7 @@ namespace FrameworkConsole {
             QueryClause clause = new QueryClause();
             clause.DmlInfo = dmlInfo;
             DmlHandler handler = new DmlHandler(clause);
-            String sql = handler.getSql(null);
+            String sql = handler.GetSql(null);
             Debug.WriteLine(String.Format("sql : {0}", sql));
             List<Dictionary<string, object>> list0 = SimpleDbcUtility.GetMapData(connection, handler);
             String jsonString = SimpleDbcUtility.GetJsonData(connection, handler);

@@ -68,17 +68,17 @@ namespace Kai.Universal.Text {
             }
 
             switch (outCase) {
-                case WordCase.LOWER_CAMEL:
+                case WordCase.LowerCamel:
                     return TextUtility.ToCamelCase(s, srcCase, true);
-                case WordCase.UPPER_CAMEL:
+                case WordCase.UpperCamel:
                     return TextUtility.ToCamelCase(s, srcCase, false);
-                case WordCase.LOWER_UNDERSCORE:
+                case WordCase.LowerUnderscore:
                     return TextUtility.ToUnderscoreCase(s, srcCase, true);
-                case WordCase.UPPER_UNDERSCORE:
+                case WordCase.UpperUnderscore:
                     return TextUtility.ToUnderscoreCase(s, srcCase, false);
-                case WordCase.LOWER_HYPHEN:
+                case WordCase.LowerHyphen:
                     return TextUtility.ToHyphenCase(s, srcCase, true);
-                case WordCase.UPPER_HYPHEN:
+                case WordCase.UpperHyphen:
                     return TextUtility.ToHyphenCase(s, srcCase, false);
 
                 default:
@@ -89,13 +89,13 @@ namespace Kai.Universal.Text {
 
         public static char ConvertCharCase(char c, WordCase outCase) {
             switch (outCase) {
-                case WordCase.LOWER_CAMEL:
-                case WordCase.LOWER_UNDERSCORE:
-                case WordCase.LOWER_HYPHEN:
+                case WordCase.LowerCamel:
+                case WordCase.LowerUnderscore:
+                case WordCase.LowerHyphen:
                     return Char.ToLower(c);
-                case WordCase.UPPER_CAMEL:
-                case WordCase.UPPER_UNDERSCORE:
-                case WordCase.UPPER_HYPHEN:
+                case WordCase.UpperCamel:
+                case WordCase.UpperUnderscore:
+                case WordCase.UpperHyphen:
                     return Char.ToUpper(c);
                 default:
                     throw new NotSupportedException();
@@ -105,22 +105,22 @@ namespace Kai.Universal.Text {
         private static string ToCamelCase(string s, WordCase srcCase, bool toLowerCamel) {
             string result = s;
             switch (srcCase) {
-                case WordCase.LOWER_CAMEL:
+                case WordCase.LowerCamel:
                     if (!toLowerCamel) {
                         result = Char.ToUpper(s[0]) + s.Substring(1);
                     }
                     break;
-                case WordCase.UPPER_CAMEL:
+                case WordCase.UpperCamel:
                     if (toLowerCamel) {
                         result = Char.ToLower(s[0]) + s.Substring(1);
                     }
                     break;
-                case WordCase.LOWER_UNDERSCORE:
-                case WordCase.UPPER_UNDERSCORE:
+                case WordCase.LowerUnderscore:
+                case WordCase.UpperUnderscore:
                     result = DelimiterCaseToCamelCase(s, STRING_UNDERSCORE, toLowerCamel);
                     break;
-                case WordCase.LOWER_HYPHEN:
-                case WordCase.UPPER_HYPHEN:
+                case WordCase.LowerHyphen:
+                case WordCase.UpperHyphen:
                     result = DelimiterCaseToCamelCase(s, STRING_HYPHEN, toLowerCamel);
                     break;
 
@@ -134,27 +134,27 @@ namespace Kai.Universal.Text {
         private static string ToUnderscoreCase(string s, WordCase srcCase, bool toLowerCase) {
             string result = s;
             switch (srcCase) {
-                case WordCase.LOWER_CAMEL:
-                case WordCase.UPPER_CAMEL:
+                case WordCase.LowerCamel:
+                case WordCase.UpperCamel:
                     result = CamelCaseToDelimiterCase(s, STRING_UNDERSCORE, toLowerCase);
                     break;
-                case WordCase.LOWER_UNDERSCORE:
+                case WordCase.LowerUnderscore:
                     if (!toLowerCase) {
                         result = s.ToUpper();
                     }
                     break;
-                case WordCase.UPPER_UNDERSCORE:
+                case WordCase.UpperUnderscore:
                     if (toLowerCase) {
                         result = s.ToLower();
                     }
                     break;
-                case WordCase.LOWER_HYPHEN:
+                case WordCase.LowerHyphen:
                     if (!toLowerCase) {
                         result = s.ToUpper();
                     }
                     result = result.Replace(STRING_HYPHEN, STRING_UNDERSCORE);
                     break;
-                case WordCase.UPPER_HYPHEN:
+                case WordCase.UpperHyphen:
                     if (toLowerCase) {
                         result = s.ToLower();
                     }
@@ -171,28 +171,28 @@ namespace Kai.Universal.Text {
         private static string ToHyphenCase(string s, WordCase srcCase, bool toLowerCase) {
             string result = s;
             switch (srcCase) {
-                case WordCase.LOWER_CAMEL:
-                case WordCase.UPPER_CAMEL:
+                case WordCase.LowerCamel:
+                case WordCase.UpperCamel:
                     result = CamelCaseToDelimiterCase(s, STRING_HYPHEN, toLowerCase);
                     break;
-                case WordCase.LOWER_UNDERSCORE:
+                case WordCase.LowerUnderscore:
                     if (!toLowerCase) {
                         result = s.ToUpper();
                     }
                     result = result.Replace(STRING_UNDERSCORE, STRING_HYPHEN);
                     break;
-                case WordCase.UPPER_UNDERSCORE:
+                case WordCase.UpperUnderscore:
                     if (toLowerCase) {
                         result = s.ToLower();
                     }
                     result = result.Replace(STRING_UNDERSCORE, STRING_HYPHEN);
                     break;
-                case WordCase.LOWER_HYPHEN:
+                case WordCase.LowerHyphen:
                     if (!toLowerCase) {
                         result = s.ToUpper();
                     }
                     break;
-                case WordCase.UPPER_HYPHEN:
+                case WordCase.UpperHyphen:
                     if (toLowerCase) {
                         result = s.ToLower();
                     }

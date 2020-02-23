@@ -1,5 +1,7 @@
-﻿using Kai.Universal.Data;
+﻿using Kai.Universal.Builder;
+using Kai.Universal.Data;
 using Kai.Universal.DataModel;
+using Kai.Universal.Helper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,8 +25,11 @@ namespace ConsoleCore {
 
 
             var i = ReadFromAppSettings();
-            var n = i.GetSection("dmlInfos").Get<IList<DmlInfoExtension>>();
+            var n = i.GetSection("dmlInfos").Get<List<DmlInfoExtension>>();
 
+            KaiSqlHelper helper = new KaiSqlBuilder().SetDmlInfos(n).Build();
+            string sql = helper.GetSelectCntSql("employeeByCfg", "sample", null);
+            string sql2 = helper.GetSelectCntSql("employeeByDirectSql", "sample", null);
             //i.GetValue<"">
             Console.WriteLine("Hello World!");
         }

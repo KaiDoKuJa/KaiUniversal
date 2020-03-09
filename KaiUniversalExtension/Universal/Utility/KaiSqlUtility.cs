@@ -38,7 +38,7 @@ namespace Kai.Universal.Utility {
         /// <returns></returns>
         private static List<Replacement> RaiseReplacements(List<CriteriaStrategy> afterReplacements, object data) {
             bool isMapModel = false;
-            var map = data as Dictionary<string, object>;
+            var map = data as IDictionary;
             if (map != null) {
                 isMapModel = true;
             }
@@ -88,7 +88,7 @@ namespace Kai.Universal.Utility {
         private static CriteriaPool RaiseCriteriaPool(List<CriteriaStrategy> criterias,
                 List<CriteriaStrategy> beforeReplacements, object data) {
             bool isMapModel = false;
-            var map = data as Dictionary<string, object>;
+            var map = data as IDictionary;
             if (map != null) {
                 isMapModel = true;
             }

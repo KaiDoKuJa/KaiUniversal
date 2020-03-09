@@ -1,7 +1,7 @@
 ﻿using Kai.Universal.Data;
 using Kai.Universal.Text;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
@@ -56,8 +56,8 @@ namespace Kai.Universal.Sql.Clause {
             object model = modelInfo.Model;
             string[] cols = base.DmlInfo.Columns;
 
-            var map = model as Dictionary<object, object>;
-            if (map != null) { 
+            var map = model as IDictionary;
+            if (map != null) {
                 isMapModel = true;
             }
             for (int i = 0; i < cols.Length; i++) {
@@ -87,7 +87,7 @@ namespace Kai.Universal.Sql.Clause {
          */
         protected void AppendPrepareProps(string[] cols, object model) {
             bool isMapModel = false;
-            var map = model as Dictionary<object, object>;
+            var map = model as IDictionary;
             if (map != null) {
                 isMapModel = true;
             }

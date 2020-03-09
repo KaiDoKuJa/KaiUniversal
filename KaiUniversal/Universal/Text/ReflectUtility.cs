@@ -115,6 +115,12 @@ namespace Kai.Universal.Text {
                    o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
         }
 
+        public static bool IsHashtable(object o) {
+            if (o == null) return false;
+            return o is IDictionary &&
+                   o.GetType().IsAssignableFrom(typeof(Hashtable));
+        }
+
         public static bool IsNumberType(object val) {
             return (val is double
                 || val is float

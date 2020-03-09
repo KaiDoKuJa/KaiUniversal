@@ -1,7 +1,7 @@
 ﻿using Kai.Universal.Data;
 using Kai.Universal.Text;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
@@ -71,7 +71,7 @@ namespace Kai.Universal.Sql.Clause {
          */
         protected void AppendColsWithProp(string[] cols, object model, string delimiter) {
             bool isMapModel = false;
-            var map = model as Dictionary<object, object>;
+            var map = model as IDictionary;
             if (map != null) {
                 isMapModel = true;
             }
@@ -97,7 +97,7 @@ namespace Kai.Universal.Sql.Clause {
 
         protected void AppendColsWithPrepareProp(string[] cols, object model, string delimiter) {
             bool isMapModel = false;
-            var map = model as Dictionary<object, object>;
+            var map = model as IDictionary;
             if (map != null) {
                 isMapModel = true;
             }

@@ -23,8 +23,8 @@ namespace FrameworkConsole {
             DbConnection connection = OpenConnection("");
             DmlInfo dmlInfo = new DmlInfo();
             dmlInfo.SqlTemplate = "select EmployeeID,LastName,Region,Photo from Employees limit 1";
-            dmlInfo.ColumnWordCase = WordCase.UPPER_CAMEL;
-            dmlInfo.MapModelWordCase = WordCase.LOWER_CAMEL;
+            dmlInfo.ColumnWordCase = WordCase.UpperCamel;
+            dmlInfo.MapModelWordCase = WordCase.LowerCamel;
             QueryClause clause = new QueryClause();
             clause.DmlInfo = dmlInfo;
             DmlHandler handler = new DmlHandler(clause);

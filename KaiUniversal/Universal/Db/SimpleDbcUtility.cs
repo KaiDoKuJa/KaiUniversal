@@ -46,7 +46,7 @@ namespace Kai.Universal.Db {
             return count;
         }
 
-        public static List<T> GetData0<T>(DbConnection connection, int commandTimeout, string sql) where T : new() {
+        public static List<T> GetData<T>(DbConnection connection, int commandTimeout, string sql) where T : new() {
             DmlInfo dmlInfo = new DmlInfo();
             dmlInfo.ColumnWordCase = WordCase.UpperUnderscore;
             dmlInfo.MapModelWordCase = WordCase.LowerCamel;
@@ -58,8 +58,15 @@ namespace Kai.Universal.Db {
             return fetch.GetResult();
         }
 
-        public static List<T> GetData0<T>(DbConnection connection, string sql) where T : new() {
-            return GetData0<T>(connection, DEFAULT_COMMAND_TIMEOUT, sql);
+        public static List<T> GetData<T>(DbConnection connection, string sql) where T : new() {
+            return GetData<T>(connection, DEFAULT_COMMAND_TIMEOUT, sql);
+        }
+
+        public static List<T> GetData<T>(DbConnection connection, DmlHandler handler) where T : new() {
+            ModelFetch<T> fetch = new ModelFetch<T>();
+            fetch.DmlInfo = handler.Clause.DmlInfo;
+            fetch.Execute(connection, handler.GetLastSql());
+            return fetch.GetResult();
         }
 
         public static List<Dictionary<string, object>> GetMapData(DbConnection connection, int commandTimeout, String sql) {

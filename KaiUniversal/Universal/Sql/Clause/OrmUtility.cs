@@ -32,7 +32,7 @@ namespace Kai.Universal.Sql.Clause {
             } else if (ReflectUtility.IsNumberType(propValue)) {
                 return Convert.ToString(propValue);
             } else if (propValue is DateTime dttm) {
-                return string.Format("{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}", dttm.Year, dttm.Month, dttm.Day, dttm.Hour, dttm.Minute, dttm.Second);
+                return string.Format("'{0}'", dttm.ToString("yyyy-MM-dd HH:mm:ss.fff"));
             } else if (propValue is SpecialString speicalString) {
                 return speicalString.Value;
             } else if (propValue is string s) {

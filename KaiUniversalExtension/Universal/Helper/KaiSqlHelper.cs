@@ -55,6 +55,15 @@ namespace Kai.Universal.Helper {
             return handler.GetSql(QueryType.SelectCnt, modelInfo);
         }
 
+        public string GetSelectTopSql(string dmlId, string groupId, object data, int top) {
+            var dmlInfo = GetDmlInfo(dmlId, groupId);
+            DmlHandler handler = GetDmlHandler(dmlInfo);
+            CriteriaStrategyContainer pool = GetCriteriaStrategyContainer(dmlInfo);
+            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo(pool, data);
+            modelInfo.Top = top;
+            return handler.GetSql(QueryType.SelectTop, modelInfo);
+        }
+
         public DmlHandler GetExecutedDmlHandler(string dmlId, string groupId, object data) {
             var dmlInfo = GetDmlInfo(dmlId, groupId);
             DmlHandler handler = GetDmlHandler(dmlInfo);

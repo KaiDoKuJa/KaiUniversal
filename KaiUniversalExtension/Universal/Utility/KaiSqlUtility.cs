@@ -1,29 +1,83 @@
-﻿using Kai.Universal.Data;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Kai.Universal.Data;
 using Kai.Universal.DataModel;
 using Kai.Universal.Sql.Where;
 using Kai.Universal.Text;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Kai.Universal.Utility {
     //  com.kai.web.common.util > DynamicSqlUtil.java
     public class KaiSqlUtility {
 
-        private KaiSqlUtility() { }
+        private KaiSqlUtility () { }
 
-        public static ModelInfo RaiseModelInfo(CriteriaStrategyContainer container, object data) {
-            if (container == null || data == null) return null;
-            ModelInfo modelInfo = new ModelInfo();
+        public static ModelInfo RaiseModelInfo (CriteriaStrategyContainer container, object data) {
+            if (container == null) return null;
+            ModelInfo modelInfo = new ModelInfo ();
 
             List<CriteriaStrategy> criterias = container.Criterias;
             List<CriteriaStrategy> beforeReplacements = container.BeforeReplacements;
             List<CriteriaStrategy> afterReplacements = container.AfterReplacements;
 
-            modelInfo.Criterias = RaiseCriteriaPool(criterias, beforeReplacements, data);
-            modelInfo.Replacements = RaiseReplacements(afterReplacements, data);
+            CriteriaPool criteriaPool = new CriteriaPool ();
+            LoadCriterias (criterias, data, ref criteriaPool);
+            LoadBeforeReplacements (beforeReplacements, data, ref criteriaPool);
+            modelInfo.Criterias = criteriaPool;
+            modelInfo.Replacements = RaiseReplacements (afterReplacements, data);
 
             return modelInfo;
+        }
+
+        /// <summary>
+        /// beforeReplacements :
+        ///     colName = exists (select 1 from tbl where xxx=${1})
+        ///     replacePattern = ${1}
+        ///     replaceMode = before
+        /// 
+
+        /// </summary>
+        /// <param name="beforeReplacements"></param>
+        /// <param name="data"></param>
+        /// <param name="criteriaPool"></param>
+        private static void LoadBeforeReplacements (List<CriteriaStrategy> beforeReplacements, object data, ref CriteriaPool criteriaPool) {
+            bool isMapModel = false;
+            var map = data as IDictionary;
+            if (map != null) {
+                isMapModel = true;
+            }
+
+            // 使用 colName, value, replacePattern
+            foreach (CriteriaStrategy vo in beforeReplacements) {
+                object value;
+                if (isMapModel) {
+                    value = map[vo.ColMapping];
+                } else {
+                    value = ReflectUtility.GetValue (data, vo.ColMapping);
+                }
+
+                string colName = vo.ColName;
+                string s = GetSqlString (value);
+                if (string.IsNullOrWhiteSpace (colName) || string.IsNullOrWhiteSpace (s)) {
+                    continue;
+                }
+                criteriaPool.AddCriteria (Criteria.AndCondition (colName.Replace (vo.ReplacePattern, s)));
+            }
+        }
+
+        private static void LoadCriterias (List<CriteriaStrategy> criterias, object data, ref CriteriaPool criteriaPool) {
+            bool isMapModel = data is IDictionary;
+
+            // 使用colName, criteriaType, value
+            foreach (CriteriaStrategy vo in criterias) {
+                string colName = vo.ColName;
+                if (string.IsNullOrWhiteSpace (colName)) {
+                    continue;
+                }
+
+                Criteria criteria = RaiseCriteria (vo, data, isMapModel);
+                criteriaPool.AddCriteria (criteria);
+            }
         }
 
         /// <summary>
@@ -31,134 +85,76 @@ namespace Kai.Universal.Utility {
         /// case [without criteria] : "select * from tbl where 1=1 and seq=$1" -> replace $1 by {value}
         /// case [with criteria] : "select * from tbl where 1=1 $1" -> replace $1 by "and {criteria}"
         /// 
-        /// only for sqlTemplate
         /// </summary>
         /// <param name="afterReplacements"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private static List<Replacement> RaiseReplacements(List<CriteriaStrategy> afterReplacements, object data) {
-            bool isMapModel = false;
-            var map = data as IDictionary;
-            if (map != null) {
-                isMapModel = true;
-            }
+        private static List<Replacement> RaiseReplacements (List<CriteriaStrategy> afterReplacements, object data) {
 
-            List<Replacement> rPool = new List<Replacement>();
+            bool isMapModel = data is IDictionary;
+
+            List<Replacement> rPool = new List<Replacement> ();
             foreach (CriteriaStrategy vo in afterReplacements) {
-                Replacement r = new Replacement();
+                Replacement r = new Replacement ();
                 string colName = vo.ColName;
 
-                object value;
-                if (isMapModel) {
-                    value = map[vo.ColMapping];
-                } else {
-                    value = ReflectUtility.GetValue(data, vo.ColMapping);
-                }
-
                 r.ReplacePattern = vo.ReplacePattern;
-                if (!string.IsNullOrWhiteSpace(colName)) { 
-                    Criteria criteria = RaiseCriteria(colName, vo.CriteriaType, value);
-                    string s = "";
+                if (!string.IsNullOrWhiteSpace (colName)) {
+                    Criteria criteria = RaiseCriteria (vo, data, isMapModel);
                     if (criteria != null) {
-                        s = " and " + CriteriaUtility.GetCriteriaSql(criteria);
+                        r.Value = " and " + CriteriaUtility.GetCriteriaSql (criteria);
+                        rPool.Add (r);
                     }
-                    r.Value = s;
                 } else {
-                    string s = GetSqlString(value);
-                    if (!string.IsNullOrWhiteSpace(s)) {
+                    object value;
+                    if (isMapModel) {
+                        var map = data as IDictionary;
+                        value = map[vo.ColMapping];
+                    } else {
+                        value = ReflectUtility.GetValue (data, vo.ColMapping);
+                    }
+                    string s = GetSqlString (value);
+                    if (!string.IsNullOrWhiteSpace (s)) {
                         r.Value = s;
+                        rPool.Add (r);
                     }
                 }
-                rPool.Add(r);
             }
 
             return rPool;
         }
-        /// <summary>
-        /// beforeReplacements :
-        ///     colName = exists (select 1 from tbl where xxx=${1})
-        ///     replacePattern = ${1}
-        ///     replaceMode = before
-        /// 
-        /// </summary>
-        /// <param name="criterias"></param>
-        /// <param name="beforeReplacements"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private static CriteriaPool RaiseCriteriaPool(List<CriteriaStrategy> criterias,
-                List<CriteriaStrategy> beforeReplacements, object data) {
-            bool isMapModel = false;
-            var map = data as IDictionary;
-            if (map != null) {
-                isMapModel = true;
-            }
-
-            CriteriaPool cPool = new CriteriaPool();
-            // 使用colName, criteriaType, value
-            foreach (CriteriaStrategy vo in criterias) {
-                string colName = vo.ColName;
-                if (string.IsNullOrWhiteSpace(colName)) {
-                    continue;
-                }
-                
-                object value;
-                if (isMapModel) {
-                    value = map[vo.ColMapping];
-                } else {
-                    value = ReflectUtility.GetValue(data, vo.ColMapping);
-                }
-
-
-                Criteria criteria = RaiseCriteria(colName, vo.CriteriaType, value);
-                cPool.AddCriteria(criteria);
-            }
-            // 使用 colName, value, replacePattern
-            foreach (CriteriaStrategy vo in beforeReplacements) {
-                object value;
-                if (isMapModel) {
-                    value = map[vo.ColMapping];
-                } else {
-                    value = ReflectUtility.GetValue(data, vo.ColMapping);
-                }
-
-                string colName = vo.ColName;
-                string s = GetSqlString(value);
-                if (string.IsNullOrWhiteSpace(colName) || string.IsNullOrWhiteSpace(s)) {
-                    continue;
-                }
-                cPool.AddCriteria(Criteria.AndCondition(colName.Replace(vo.ReplacePattern, s)));
-            }
-
-            return cPool;
-        }
-
-        private static Criteria RaiseCriteria(string colName, CriteriaType criteriaType, object value) {
+        
+        private static Criteria RaiseCriteria (CriteriaStrategy vo, object data, bool isMapModel) {
             Criteria result = null;
-            try {
-                switch (criteriaType) {
-                    case CriteriaType.Direct:
-                        result = Criteria.AndCondition(colName);
-                        break;
-                    case CriteriaType.In:
-                        if (ReflectUtility.IsList(value)) {
-                            // TODO : 需驗證 UT
-                            var list = (IList)value;
-                            var array = new object[list.Count];
-                            list.CopyTo(array, 0);
-                            if (list.Count > 0) {
-                                result = Criteria.AndInCondition(colName, array);
-                            }
-                        } else {
-                            result = Criteria.AndCondition(colName, CriteriaType.Equal, value);
-                        }
-                        break;
-                    default:
-                        result = Criteria.AndCondition(colName, criteriaType, value);
-                        break;
+
+            if (CriteriaType.Direct != vo.CriteriaType) {
+                object value;
+                if (isMapModel) {
+                    var map = data as IDictionary;
+                    value = map[vo.ColMapping];
+                } else {
+                    value = ReflectUtility.GetValue (data, vo.ColMapping);
                 }
-            } catch (Exception e) {
-                return result;
+
+                if (CriteriaType.In != vo.CriteriaType) {
+                    result = Criteria.AndCondition (vo.ColName, vo.CriteriaType, value);
+                } else {
+                    if (ReflectUtility.IsList (value)) {
+                        // TODO : 需驗證 UT
+                        var list = (IList) value;
+                        var array = new object[list.Count];
+                        list.CopyTo (array, 0);
+                        if (list.Count > 0) {
+                            result = Criteria.AndInCondition (vo.ColName, array);
+                        }
+                    } else {
+                        result = Criteria.AndCondition (vo.ColName, CriteriaType.Equal, value);
+                    }
+                }
+            } else {
+                result = Criteria.AndCondition (vo.ColName); // correct, don't use value.
             }
+
             return result;
         }
 
@@ -169,23 +165,23 @@ namespace Kai.Universal.Utility {
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static string GetSqlString(object value) {
+        private static string GetSqlString (object value) {
             if (value == null) return null;
             string s = null;
-            if (ReflectUtility.IsList(value)) {
+            if (ReflectUtility.IsList (value)) {
                 // TODO : 需驗證 UT
-                var list = (IList)value;
+                var list = (IList) value;
                 var array = new object[list.Count];
-                list.CopyTo(array, 0);
+                list.CopyTo (array, 0);
                 if (list.Count > 0) {
-                    s = CriteriaUtility.GetCriteriaValues(array);
+                    s = CriteriaUtility.GetCriteriaValues (array);
                 }
             } else if (value is string x) {
-                if (!string.IsNullOrWhiteSpace(x)) {
-                    s = CriteriaUtility.GetCriteriaValue(x);
+                if (!string.IsNullOrWhiteSpace (x)) {
+                    s = CriteriaUtility.GetCriteriaValue (x);
                 }
             } else {
-                s = CriteriaUtility.GetCriteriaValue(value);
+                s = CriteriaUtility.GetCriteriaValue (value);
             }
             return s;
         }

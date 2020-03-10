@@ -36,7 +36,7 @@ namespace Kai.Universal.Db {
             try {
                 connection = this.GetConnection();
                 connection.Open();
-                res = SimpleDbcUtility.GetData0<T>(connection, commandTimeout, sql);
+                res = SimpleDbcUtility.GetData<T>(connection, commandTimeout, sql);
             } catch {
                 throw;
             } finally {
@@ -48,6 +48,15 @@ namespace Kai.Universal.Db {
 
         public List<T> GetData<T>(string sql) where T : new() {
             return GetData<T>(defaultCommandTimeout, sql);
+        }
+
+        public List<T> GetData<T>(DmlHandler handler) where T : new() {
+            List<T> res = null;
+            DbConnection connection = this.GetConnection();
+            connection.Open();
+            res = SimpleDbcUtility.GetData<T>(connection, handler);
+            CloseUtility.CloseConnection(ref connection);
+            return res;
         }
 
         public List<Dictionary<string, object>> GetMapData(int commandTimeout, string sql) {

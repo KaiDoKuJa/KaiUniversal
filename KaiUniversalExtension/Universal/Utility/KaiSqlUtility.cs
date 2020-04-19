@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Kai.Universal.Data;
 using Kai.Universal.DataModel;
+using Kai.Universal.Helper;
+using Kai.Universal.Sql.Handler;
+using Kai.Universal.Sql.Type;
 using Kai.Universal.Sql.Where;
 using Kai.Universal.Text;
 
@@ -12,7 +15,46 @@ namespace Kai.Universal.Utility {
 
         private KaiSqlUtility () { }
 
-        public static ModelInfo RaiseModelInfo (CriteriaStrategyContainer container, object data) {
+        public static string GetSelectCntSql (KaiSqlHelper helper, DmlInfoExtension dmlInfo, object data) {
+            DmlHandler handler = helper.GetDmlHandler (dmlInfo);
+            CriteriaStrategyContainer pool = helper.GetCriteriaStrategyContainer (dmlInfo);
+            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo (pool, data);
+            return handler.GetSql (QueryType.SelectCnt, modelInfo);
+        }
+
+        public static string GetSelectCntSql (KaiSqlHelper helper, string dmlId, string groupId, object data) {
+            var dmlInfo = helper.GetDmlInfo (dmlId, groupId);
+            return GetSelectCntSql(helper, dmlInfo, data);
+        }
+
+        public static string GetSelectTopSql (KaiSqlHelper helper, DmlInfoExtension dmlInfo, object data, int top) {
+            DmlHandler handler = helper.GetDmlHandler (dmlInfo);
+            CriteriaStrategyContainer pool = helper.GetCriteriaStrategyContainer (dmlInfo);
+            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo (pool, data);
+            modelInfo.Top = top;
+            return handler.GetSql (QueryType.SelectTop, modelInfo);
+        }
+
+        public static string GetSelectTopSql (KaiSqlHelper helper, string dmlId, string groupId, object data, int top) {
+            var dmlInfo = helper.GetDmlInfo (dmlId, groupId);
+            return GetSelectTopSql (helper, dmlInfo, data, top);
+        }
+
+        public static DmlHandler GetExecutedDmlHandler (KaiSqlHelper helper, DmlInfoExtension dmlInfo, object data) {
+            DmlHandler handler = helper.GetDmlHandler (dmlInfo);
+            CriteriaStrategyContainer pool = helper.GetCriteriaStrategyContainer (dmlInfo);
+            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo (pool, data);
+
+            handler.GetSql (modelInfo);
+            return handler;
+        }
+
+        public static DmlHandler GetExecutedDmlHandler (KaiSqlHelper helper, string dmlId, string groupId, object data) {
+            var dmlInfo = helper.GetDmlInfo (dmlId, groupId);
+            return GetExecutedDmlHandler(helper, dmlInfo, data);
+        }
+
+        private static ModelInfo RaiseModelInfo (CriteriaStrategyContainer container, object data) {
             if (container == null) return null;
             ModelInfo modelInfo = new ModelInfo ();
 
@@ -123,7 +165,7 @@ namespace Kai.Universal.Utility {
 
             return rPool;
         }
-        
+
         private static Criteria RaiseCriteria (CriteriaStrategy vo, object data, bool isMapModel) {
             Criteria result = null;
 
@@ -131,7 +173,11 @@ namespace Kai.Universal.Utility {
                 object value;
                 if (isMapModel) {
                     var map = data as IDictionary;
-                    value = map[vo.ColMapping];
+                    if (map == null || vo.ColMapping == null) {
+                        value = null;
+                    } else {
+                        value = map[vo.ColMapping];
+                    }
                 } else {
                     value = ReflectUtility.GetValue (data, vo.ColMapping);
                 }

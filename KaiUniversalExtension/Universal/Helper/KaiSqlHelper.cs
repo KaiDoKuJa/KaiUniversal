@@ -15,7 +15,7 @@ namespace Kai.Universal.Helper {
         // criteriaId -> Container
         public Dictionary<string, CriteriaStrategyContainer> CriteriaStrategyContainers { get; set; }
 
-        private DmlInfoExtension GetDmlInfo(string dmlId, string groupId) {
+        public DmlInfoExtension GetDmlInfo(string dmlId, string groupId) {
             if (string.IsNullOrWhiteSpace(dmlId) || string.IsNullOrWhiteSpace(groupId)) return null;
             if (DmlInfos == null || DmlInfos.Count == 0) return null;
             foreach (var item in DmlInfos) {
@@ -47,34 +47,7 @@ namespace Kai.Universal.Helper {
             return DmlHandlers[dmlInfo.GroupId][dmlInfo.DmlId];
         }
 
-        public string GetSelectCntSql(string dmlId, string groupId, object data) {
-            var dmlInfo = GetDmlInfo(dmlId, groupId);
-            DmlHandler handler = GetDmlHandler(dmlInfo);
-            CriteriaStrategyContainer pool = GetCriteriaStrategyContainer(dmlInfo);
-            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo(pool, data);
-            return handler.GetSql(QueryType.SelectCnt, modelInfo);
-        }
-
-        public string GetSelectTopSql(string dmlId, string groupId, object data, int top) {
-            var dmlInfo = GetDmlInfo(dmlId, groupId);
-            DmlHandler handler = GetDmlHandler(dmlInfo);
-            CriteriaStrategyContainer pool = GetCriteriaStrategyContainer(dmlInfo);
-            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo(pool, data);
-            modelInfo.Top = top;
-            return handler.GetSql(QueryType.SelectTop, modelInfo);
-        }
-
-        public DmlHandler GetExecutedDmlHandler(string dmlId, string groupId, object data) {
-            var dmlInfo = GetDmlInfo(dmlId, groupId);
-            DmlHandler handler = GetDmlHandler(dmlInfo);
-
-            CriteriaStrategyContainer pool = GetCriteriaStrategyContainer(dmlInfo);
-            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo(pool, data);
-
-            handler.GetSql(modelInfo);
-
-            return handler;
-        }
+        
 
     }
 }

@@ -4,6 +4,7 @@ using Kai.Universal.Sql.Clause.Dialect;
 using Kai.Universal.Sql.Result;
 using Kai.Universal.Sql.Type;
 using System;
+using System.Threading;
 
 namespace Kai.Universal.Sql.Handler {
     public class DmlHandler {
@@ -56,47 +57,71 @@ namespace Kai.Universal.Sql.Handler {
         }
 
         public string GetSql(ModelInfo modelInfo) {
-            if (modelInfo == null) return Clause.GetSql(null);
-            SqlGeneratorMode mode = modelInfo.Mode;
-            switch (mode) {
-                case SqlGeneratorMode.PreparedStatement:
-                    return Clause.GetPreparedSql(modelInfo);
-                case SqlGeneratorMode.Statement:
-                default:
-                    return Clause.GetSql(modelInfo);
+            var __lock = new object();
+            bool __isLocked = false;
+            try {
+#if NETSTANDARD2_0
+                Monitor.Enter(__lock, ref __isLocked);
+#else
+                __isLocked = true;
+                Monitor.Enter(__lock);
+#endif
+                if (modelInfo == null) return Clause.GetSql(null);
+                SqlGeneratorMode mode = modelInfo.Mode;
+                switch (mode) {
+                    case SqlGeneratorMode.PreparedStatement:
+                        return Clause.GetPreparedSql(modelInfo);
+                    case SqlGeneratorMode.Statement:
+                    default:
+                        return Clause.GetSql(modelInfo);
+                }
+            } finally {
+                if (__isLocked) Monitor.Exit(__lock);
             }
         }
 
         public string GetSql(QueryType queryType, ModelInfo modelInfo) {
-            if (modelInfo == null) return Clause.GetSql(null);
-            SqlGeneratorMode mode = modelInfo.Mode;
-            switch (mode) {
-                case SqlGeneratorMode.PreparedStatement:
-                    return Clause.GetPreparedSql(modelInfo);
-                default:
-                    var limitingResultClause = Clause as LimitingResultClause;
-                    if (limitingResultClause != null) {
-                        switch (queryType) {
-                            case QueryType.SelectPaging:
-                                return limitingResultClause.GetPagingSql(modelInfo);
-                            case QueryType.SelectTop:
-                                return limitingResultClause.GetFetchFirstSql(modelInfo);
-                            default:
-                                break;
+            var __lock = new object();
+            bool __isLocked = false;
+            try {
+#if NETSTANDARD2_0
+                Monitor.Enter(__lock, ref __isLocked);
+#else
+                __isLocked = true;
+                Monitor.Enter(__lock);
+#endif
+                if (modelInfo == null) return Clause.GetSql(null);
+                SqlGeneratorMode mode = modelInfo.Mode;
+                switch (mode) {
+                    case SqlGeneratorMode.PreparedStatement:
+                        return Clause.GetPreparedSql(modelInfo);
+                    default:
+                        var limitingResultClause = Clause as LimitingResultClause;
+                        if (limitingResultClause != null) {
+                            switch (queryType) {
+                                case QueryType.SelectPaging:
+                                    return limitingResultClause.GetPagingSql(modelInfo);
+                                case QueryType.SelectTop:
+                                    return limitingResultClause.GetFetchFirstSql(modelInfo);
+                                default:
+                                    break;
+                            }
                         }
-                    }
-                    var queryClause = Clause as QueryClause;
-                    if (queryClause != null) {
-                        switch (queryType) {
-                            case QueryType.SelectAll:
-                                return queryClause.GetSelectAllSql();
-                            case QueryType.SelectCnt:
-                                return queryClause.GetSelectCntSql(modelInfo);
-                            default:
-                                break;
+                        var queryClause = Clause as QueryClause;
+                        if (queryClause != null) {
+                            switch (queryType) {
+                                case QueryType.SelectAll:
+                                    return queryClause.GetSelectAllSql();
+                                case QueryType.SelectCnt:
+                                    return queryClause.GetSelectCntSql(modelInfo);
+                                default:
+                                    break;
+                            }
                         }
-                    }
-                    return Clause.GetSql(modelInfo);
+                        return Clause.GetSql(modelInfo);
+                }
+            } finally {
+                if (__isLocked) Monitor.Exit(__lock);
             }
         }
 

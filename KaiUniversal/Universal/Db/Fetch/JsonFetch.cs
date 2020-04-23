@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
+﻿using Kai.Universal.Data;
 //#if NETSTANDARD2_0
 
 //#else 
 //using System.Web.Script.Serialization;
 //#endif
 using Kai.Universal.Text;
-using Kai.Universal.Data;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Text;
 
 namespace Kai.Universal.Db.Fetch {
 
@@ -71,12 +71,12 @@ namespace Kai.Universal.Db.Fetch {
                 return val.ToString();
             } else if (val is byte[]) { // TODO : is all of blob~binary
                 // JSON spec is not hex words
-                return string.Format(jsonStringTemplate, HexUtility.BytesToHex((byte[]) val));
+                return string.Format(jsonStringTemplate, HexUtility.BytesToHex((byte[])val));
             } else { // clob can use this?
                 return string.Format(jsonStringTemplate, EscapeJsonQuote(val.ToString()));
             }
             // TODO : datetime 
-            
+
         }
 
         private static string EscapeJsonQuote(string s) {

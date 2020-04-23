@@ -13,7 +13,7 @@ namespace Kai.Universal.Db {
         public SqlServerDao(SimpleDataSource ds) {
             this.DataSource = ds;
         }
-        
+
         public SqlServerDao(string connectionString) {
             var ds = new SimpleDataSource();
             ds.ConnectionString = connectionString;

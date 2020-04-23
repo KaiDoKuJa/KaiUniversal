@@ -1,4 +1,3 @@
-using System;
 namespace Kai.Universal.Sql.Where {
 
     /// <summary>
@@ -84,7 +83,7 @@ namespace Kai.Universal.Sql.Where {
             if (val == null || "".Equals(val)) {
                 return null;
             }
-            
+
             Criteria c = new Criteria();
             c.ColName = col;
             c.ColValue = val;

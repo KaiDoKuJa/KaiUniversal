@@ -1,8 +1,8 @@
+using Kai.Universal.Text;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Kai.Universal.Text;
 
 namespace Kai.Universal.Crypto {
 
@@ -35,7 +35,7 @@ namespace Kai.Universal.Crypto {
             try {
                 provider = GetProvider();
 
-                
+
                 byte[] input = encoding.GetBytes(message);
 
                 ms = new MemoryStream();

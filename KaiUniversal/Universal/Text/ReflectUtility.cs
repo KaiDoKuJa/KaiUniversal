@@ -25,7 +25,7 @@ namespace Kai.Universal.Text {
             if (property != null) {
                 try {
                     SetPropertyValue(property, model, val);
-                } catch {}
+                } catch { }
             }
         }
 
@@ -51,11 +51,11 @@ namespace Kai.Universal.Text {
                 DateTime dttm = (DateTime)val;
                 return dttm.ToString(DateTimeUtility.ISO8601);
             }
-            
+
             if (val is byte[]) {
-                return Convert.ToBase64String((byte[]) val);
+                return Convert.ToBase64String((byte[])val);
             }
-            
+
             return val.ToString();
         }
 

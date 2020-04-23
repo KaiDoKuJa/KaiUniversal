@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Kai.Universal.Data;
+using Kai.Universal.Text;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using Kai.Universal.Text;
-using Kai.Universal.Data;
 
 namespace Kai.Universal.Db.Fetch {
 

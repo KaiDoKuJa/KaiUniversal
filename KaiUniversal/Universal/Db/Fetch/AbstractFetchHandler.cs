@@ -43,9 +43,9 @@ namespace Kai.Universal.Db.Fetch {
                 // load Data
                 this.DoProcessDataReader(reader);
 
-            } catch  {
+            } catch {
                 this.Abandon();
-                throw ;
+                throw;
             } finally {
                 CloseUtility.CloseDataReader(ref reader);
                 CloseUtility.DisposeSqlCommmand(ref command);

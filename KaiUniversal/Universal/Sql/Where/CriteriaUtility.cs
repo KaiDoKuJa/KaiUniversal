@@ -24,7 +24,7 @@ namespace Kai.Universal.Sql.Where {
         public static string GetCriteriaValue(object propValue) {
             return OrmUtility.GetSqlString(propValue);
         }
-   
+
         public static string GetCriterialTypeFormula(CriteriaType criteriaType) {
             string result = "";
             switch (criteriaType) {

@@ -1,9 +1,9 @@
-﻿using Kai.Universal.Data;
+﻿using System.Collections.Generic;
+using Kai.Universal.Data;
 using Kai.Universal.DataModel;
 using Kai.Universal.Sql.Handler;
 using Kai.Universal.Sql.Type;
 using Kai.Universal.Utility;
-using System.Collections.Generic;
 
 namespace Kai.Universal.Helper {
     public class KaiSqlHelper {
@@ -47,7 +47,50 @@ namespace Kai.Universal.Helper {
             return DmlHandlers[dmlInfo.GroupId][dmlInfo.DmlId];
         }
 
-        
+        public string GetSelectCntSql(string dmlId, string groupId, object data) {
+            var dmlInfo = GetDmlInfo(dmlId, groupId);
+            return GetSelectCntSql(dmlInfo, data);
+        }
+
+        public string GetSelectCntSql(DmlInfoExtension dmlInfo, object data) {
+            DmlHandler handler = GetDmlHandler(dmlInfo);
+            CriteriaStrategyContainer pool = GetCriteriaStrategyContainer(dmlInfo);
+            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo(pool, data);
+            return handler.GetSql(QueryType.SelectCnt, modelInfo);
+        }
+
+        public string GetSelectTopSql(string dmlId, string groupId, object data, int top) {
+            var dmlInfo = GetDmlInfo(dmlId, groupId);
+            return GetSelectTopSql(dmlInfo, data, top);
+        }
+
+        public string GetSelectTopSql(DmlInfoExtension dmlInfo, object data, int top) {
+            DmlHandler handler = GetDmlHandler(dmlInfo);
+            CriteriaStrategyContainer pool = GetCriteriaStrategyContainer(dmlInfo);
+            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo(pool, data);
+            modelInfo.Top = top;
+            return handler.GetSql(QueryType.SelectTop, modelInfo);
+        }
+
+        public DmlHandler GenSql(string dmlId, string groupId, object data) {
+            var dmlInfo = GetDmlInfo(dmlId, groupId);
+            string sql = "";
+            return GenSql(dmlInfo, data, ref sql);
+        }
+
+        public DmlHandler GenSql(string dmlId, string groupId, object data, ref string sql) {
+            var dmlInfo = GetDmlInfo(dmlId, groupId);
+            return GenSql(dmlInfo, data, ref sql);
+        }
+
+        public DmlHandler GenSql(DmlInfoExtension dmlInfo, object data, ref string sql) {
+            DmlHandler handler = GetDmlHandler(dmlInfo);
+            CriteriaStrategyContainer pool = GetCriteriaStrategyContainer(dmlInfo);
+            ModelInfo modelInfo = KaiSqlUtility.RaiseModelInfo(pool, data);
+
+            sql = handler.GetSql(modelInfo);
+            return handler;
+        }
 
     }
 }

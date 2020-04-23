@@ -1,5 +1,5 @@
-﻿using Kai.Universal.Sql.Where;
-using Kai.Universal.Sql.Result;
+﻿using Kai.Universal.Sql.Result;
+using Kai.Universal.Sql.Where;
 using System;
 using System.Collections.Generic;
 

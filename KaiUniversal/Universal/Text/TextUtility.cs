@@ -13,7 +13,7 @@ namespace Kai.Universal.Text {
         private TextUtility() { }
 
         public static string ToDefaultString(string source, string defaultValue) {
-        if (source == null || "".Equals(source.Trim())) {
+            if (source == null || "".Equals(source.Trim())) {
                 return defaultValue;
             }
             return source;

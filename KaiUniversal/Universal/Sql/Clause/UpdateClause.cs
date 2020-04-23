@@ -22,13 +22,12 @@ namespace Kai.Universal.Sql.Clause {
         }
 
 
-        protected override string GenSql(ModelInfo modelInfo) {
+        protected override void GenSql(ModelInfo modelInfo) {
             string[] updateColumns = base.DmlInfo.Columns;
             string[] mainColumns = base.DmlInfo.NonQueryMandatoryColumns;
             object model = modelInfo.Model;
             object originModel = modelInfo.OriginModel;
 
-            sb = new StringBuilder();
             sb.Append(TEXT_UPDATE_WITH_SPACE);
             sb.Append(base.DmlInfo.TableName);
             sb.Append(" set ");
@@ -39,26 +38,20 @@ namespace Kai.Universal.Sql.Clause {
             } else {
                 this.AppendColsWithProp(mainColumns, originModel, TEXT_AND_WITH_SPACE);
             }
-
-            return sb.ToString();
-
         }
 
 
-        protected override string GenPreparedSql(ModelInfo modelInfo) {
+        protected override void GenPreparedSql(ModelInfo modelInfo) {
             string[] updateColumns = base.DmlInfo.Columns;
             string[] mainColumns = base.DmlInfo.NonQueryMandatoryColumns;
             object model = modelInfo.Model;
 
-            sb = new StringBuilder();
             sb.Append(TEXT_UPDATE_WITH_SPACE);
             sb.Append(base.DmlInfo.TableName);
             sb.Append(" set ");
             this.AppendColsWithPrepareProp(updateColumns, model, ",");
             sb.Append(TEXT_WHERE_WITH_SPACE);
             this.AppendColsWithPrepareProp(mainColumns, model, TEXT_AND_WITH_SPACE);
-
-            return sb.ToString();
         }
 
         /**

@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Kai.Universal.Data;
+﻿using Kai.Universal.Data;
 using Kai.Universal.Sql.Type;
 using Kai.Universal.Sql.Where;
 using Kai.Universal.Text;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
+    /// <summary>
+    /// all of the Clause Class are non thread safe
+    /// please use DmlHandler to control thread safe
+    /// </summary>
     public abstract class AbstractSqlClause {
 
         private static readonly string NO_TABLE_NAME = "no table name";
@@ -20,18 +24,18 @@ namespace Kai.Universal.Sql.Clause {
 
         protected StringBuilder sb;
 
-        private void BaseNecessaryCheck () {
-            if (this.IsEmptyTableName ()) {
-                throw new ArgumentNullException (NO_TABLE_NAME);
+        private void BaseNecessaryCheck() {
+            if (this.IsEmptyTableName()) {
+                throw new ArgumentNullException(NO_TABLE_NAME);
             }
-            NecessaryCheck ();
+            NecessaryCheck();
         }
 
-        protected abstract void NecessaryCheck ();
+        protected abstract void NecessaryCheck();
         // protected abstract <T extends ModelInfo> string genSql(T modelInfo)
-        protected abstract string GenSql (ModelInfo modelInfo);
+        protected abstract void GenSql(ModelInfo modelInfo);
 
-        protected abstract string GenPreparedSql (ModelInfo modelInfo);
+        protected abstract void GenPreparedSql(ModelInfo modelInfo);
 
         /**
          * gen direct sql by sqlTemplate
@@ -43,108 +47,102 @@ namespace Kai.Universal.Sql.Clause {
          * @param modelInfo
          * @return
          */
-        protected string GenDirectSql (ModelInfo modelInfo) {
-            sb = new StringBuilder ();
-            sb.Append (DmlInfo.SqlTemplate);
-
+        protected void GenDirectSql(ModelInfo modelInfo) {
+            sb.Append(DmlInfo.SqlTemplate);
             string whereSql = null;
-            List<Replacement> replacements = null;
             if (modelInfo != null) {
-                replacements = modelInfo.Replacements;
                 CriteriaPool criterias = modelInfo.Criterias;
                 if (criterias != null) {
-                    whereSql = criterias.GetWhereSql ();
+                    whereSql = criterias.GetWhereSql();
                 }
             }
 
-            if (whereSql != null && !"".Equals (whereSql.Trim ())) {
-                sb.Append (TEXT_AND_WITH_SPACE);
-                sb.Append (whereSql);
+            if (whereSql != null && !"".Equals(whereSql.Trim())) {
+                sb.Append(TEXT_AND_WITH_SPACE);
+                sb.Append(whereSql);
             }
-
-            string sql = sb.ToString ();
-            if (replacements != null && replacements.Count > 0) {
-                DoReplacementsSql (ref sql, replacements);
-            }
-
-            return sql;
         }
 
-        public string GetSql (ModelInfo modelInfo) {
-            if (DmlInfo == null) throw new ArgumentNullException (NO_DML_INFO);
-            if (UseSqlTemplate (DmlInfo.SqlTemplate)) return GenDirectSql (modelInfo);
-            BaseNecessaryCheck ();
-            string sql = GenSql (modelInfo);
+        public string GetSql(ModelInfo modelInfo) {
+            if (DmlInfo == null) throw new ArgumentNullException(NO_DML_INFO);
+            sb = new StringBuilder();
+            if (!UseSqlTemplate(DmlInfo.SqlTemplate)) {
+                BaseNecessaryCheck();
+                GenSql(modelInfo);
+            } else {
+                GenDirectSql(modelInfo);
+            }
             if (modelInfo != null) {
-                if (modelInfo.Replacements != null && modelInfo.Replacements.Count > 0) {
-                    DoReplacementsSql (ref sql, modelInfo.Replacements);
+                var replacements = modelInfo.Replacements;
+                if (replacements != null && replacements.Count > 0) {
+                    DoReplacementsSql(replacements);
                 }
             }
-            return sql;
+            return sb.ToString();
         }
 
-        public string GetPreparedSql (ModelInfo modelInfo) {
-            throw new NotImplementedException ("not implement");
+        public string GetPreparedSql(ModelInfo modelInfo) {
+            throw new NotImplementedException("not implement");
         }
 
-        public string GetLastSql () {
+        public string GetLastSql() {
             if (sb != null)
-                return sb.ToString ();
-            return GetSql (null);
+                return sb.ToString();
+            return GetSql(null);
         }
 
-        private void DoReplacementsSql (ref string sql, List<Replacement> replacements) {
+        private void DoReplacementsSql(List<Replacement> replacements) {
             foreach (Replacement r in replacements) {
-                sql = sql.Replace (r.ReplacePattern, r.Value);
+                sb.Replace(r.ReplacePattern, r.Value);
             }
         }
 
-        public bool IsEmptyTableName () {
-            return (DmlInfo.TableName == null ||"".Equals (DmlInfo.TableName));
+        public bool IsEmptyTableName() {
+            return (DmlInfo.TableName == null || "".Equals(DmlInfo.TableName));
         }
 
-        public bool IsEmptyColumns () {
+        public bool IsEmptyColumns() {
             string[] columns = DmlInfo.Columns;
-            return OrmUtility.IsArrayEmpty (columns);
+            return OrmUtility.IsArrayEmpty(columns);
         }
 
-        public bool IsEmptyNonQueryMandatoryColumns () {
+        public bool IsEmptyNonQueryMandatoryColumns() {
             string[] columns = DmlInfo.NonQueryMandatoryColumns;
-            return OrmUtility.IsArrayEmpty (columns);
+            return OrmUtility.IsArrayEmpty(columns);
         }
 
-        public bool IsNoAttachQuoteColumn (string col) {
+        public bool IsNoAttachQuoteColumn(string col) {
             string[] noAttachQuoteColumns = DmlInfo.NoAttachQuoteColumns;
             if (noAttachQuoteColumns == null) return false;
-            return OrmUtility.IsStringInArray (col, noAttachQuoteColumns);
+            return OrmUtility.IsStringInArray(col, noAttachQuoteColumns);
         }
 
-        protected bool UseSqlTemplate (string sqlTemplate) {
-            return (sqlTemplate != null && !"".Equals (sqlTemplate.Trim ()));
+        protected bool UseSqlTemplate(string sqlTemplate) {
+            return (sqlTemplate != null && !"".Equals(sqlTemplate.Trim()));
         }
 
-        protected void AppendCols (string[] cols, char delimiter) {
+        protected void AppendCols(string[] cols, char delimiter) {
             for (int i = 0; i < cols.Length; i++) {
                 if (i > 0) {
-                    sb.Append (delimiter);
+                    sb.Append(delimiter);
                 }
-                sb.Append (cols[i]);
+                sb.Append(cols[i]);
             }
         }
 
-        protected void AppendPropValue (object propValue, bool isNoAttachQuoteColumn) {
+        protected void AppendPropValue(object propValue, bool isNoAttachQuoteColumn) {
             if (propValue == null) {
-                sb.Append ("null");
+                sb.Append("null");
             } else {
                 if (!isNoAttachQuoteColumn) {
-                    AppendPropValueByChkClazz (propValue);
+                    AppendPropValueByChkClazz(propValue);
                 } else {
                     // noneed control when propValue is null.
                     if (propValue is string) {
-                        sb.Append (string.Format ("{0}", propValue));
+                        sb.Append(string.Format("{0}", propValue));
                     } else {
                         // Kai : 未來建立exception時可由上層抓取colName
-                        throw new ArgumentException ("propValue is not string for special column!", "propValue");
+                        throw new ArgumentException("propValue is not string for special column!", "propValue");
                     }
                 }
             }
@@ -156,26 +154,26 @@ namespace Kai.Universal.Sql.Clause {
          * @param propValue
          *            the property value
          */
-        protected void AppendPropValueByChkClazz (object propValue) {
+        protected void AppendPropValueByChkClazz(object propValue) {
             if (!(propValue is byte[])) {
-                string propValueString = OrmUtility.GetSqlString (propValue, DmlInfo.UseUnicodePrefix);
-                sb.Append (propValueString);
+                string propValueString = OrmUtility.GetSqlString(propValue, DmlInfo.UseUnicodePrefix);
+                sb.Append(propValueString);
             } else {
                 switch (DbmsType) {
                     // oracle : hextoraw('453d7a34')
                     case DbmsType.FromSqlServer2005:
                     case DbmsType.FromSqlServer2012:
                         // mssql : 0x453d7a34
-                        sb.Append (string.Format ("0x{0}", HexUtility.BytesToHex ((byte[]) propValue)));
+                        sb.Append(string.Format("0x{0}", HexUtility.BytesToHex((byte[])propValue)));
                         break;
                     case DbmsType.Default:
                     default:
-                        throw new ArgumentException ("byte array need select one db type");
+                        throw new ArgumentException("byte array need select one db type");
                 }
             }
         }
 
-        protected string GetColumnMapping (string colName, bool isMapModel) {
+        protected string GetColumnMapping(string colName, bool isMapModel) {
             string wordCase = colName;
             Dictionary<string, string> customerMapping = DmlInfo.CustomerMapping;
             if (customerMapping == null) {
@@ -183,11 +181,11 @@ namespace Kai.Universal.Sql.Clause {
                 if (!isMapModel) mapModelWordCase = WordCase.UpperCamel;
                 WordCase columnWordCase = DmlInfo.ColumnWordCase;
                 if (mapModelWordCase != columnWordCase) {
-                    wordCase = TextUtility.ConvertWordCase (colName, columnWordCase, mapModelWordCase);
+                    wordCase = TextUtility.ConvertWordCase(colName, columnWordCase, mapModelWordCase);
                 }
             } else {
                 wordCase = customerMapping[colName];
-                if (!isMapModel) wordCase = Char.ToUpper (wordCase[0]) + wordCase.Substring (1);
+                if (!isMapModel) wordCase = Char.ToUpper(wordCase[0]) + wordCase.Substring(1);
             }
             return wordCase;
         }

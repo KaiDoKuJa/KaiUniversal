@@ -96,7 +96,7 @@ namespace Kai.Universal.Sql.Handler {
                     case SqlGeneratorMode.PreparedStatement:
                         return Clause.GetPreparedSql(modelInfo);
                     default:
-                        var limitingResultClause = Clause as LimitingResultClause;
+                        var limitingResultClause = Clause as ILimitingResultClause;
                         if (limitingResultClause != null) {
                             switch (queryType) {
                                 case QueryType.SelectPaging:

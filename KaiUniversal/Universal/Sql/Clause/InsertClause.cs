@@ -16,8 +16,7 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
-        protected override string GenSql(ModelInfo modelInfo) {
-            sb = new StringBuilder();
+        protected override void GenSql(ModelInfo modelInfo) {
             sb.Append(TEXT_INSERT_INTO_WITH_SPACE);
             sb.Append(base.DmlInfo.TableName);
             sb.Append(" (");
@@ -25,15 +24,13 @@ namespace Kai.Universal.Sql.Clause {
             sb.Append(") values (");
             this.AppendProps(modelInfo);
             sb.Append(")");
-            return sb.ToString();
         }
 
 
-        protected override string GenPreparedSql(ModelInfo modelInfo) {
+        protected override void GenPreparedSql(ModelInfo modelInfo) {
             string[] insertColumns = base.DmlInfo.Columns;
             object model = modelInfo.Model;
 
-            sb = new StringBuilder();
             sb.Append(TEXT_INSERT_INTO_WITH_SPACE);
             sb.Append(base.DmlInfo.TableName);
             sb.Append(" (");
@@ -41,7 +38,6 @@ namespace Kai.Universal.Sql.Clause {
             sb.Append(") values (");
             this.AppendPrepareProps(insertColumns, model);
             sb.Append(")");
-            return sb.ToString();
         }
 
         /**

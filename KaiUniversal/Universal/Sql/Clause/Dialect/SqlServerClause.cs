@@ -4,7 +4,7 @@ using System;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause.Dialect {
-    public class SqlServerClause : QueryClause, LimitingResultClause {
+    public class SqlServerClause : QueryClause, ILimitingResultClause {
 
         public SqlServerClause() {
             base.DbmsType = DbmsType.FromSqlServer2012;

@@ -14,8 +14,7 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
-        protected override string GenSql(ModelInfo modelInfo) {
-            sb = new StringBuilder();
+        protected override void GenSql(ModelInfo modelInfo) {
             sb.Append("select ");
             base.AppendCols(base.DmlInfo.Columns, ',');
             sb.Append(TEXT_FROM_WITH_SPACE);
@@ -24,32 +23,27 @@ namespace Kai.Universal.Sql.Clause {
             this.AppendWhereSql(modelInfo.Criterias);
             this.AppendOrderBy(modelInfo.OrderBy);
             this.AppendGroupBy(modelInfo.GroupBy);
-
-            return sb.ToString();
         }
 
 
-        protected override string GenPreparedSql(ModelInfo modelInfo) {
+        protected override void GenPreparedSql(ModelInfo modelInfo) {
             throw new Exception("not support method!");
         }
 
         public string GetSelectCntSql(ModelInfo modelInfo) {
-            if (UseSqlTemplate(base.DmlInfo.SqlTemplate)) return GenDirectSql(modelInfo);
             sb = new StringBuilder();
             sb.Append("select count(1) ");
             sb.Append(TEXT_FROM_WITH_SPACE);
             sb.Append(base.DmlInfo.TableName);
-
             this.AppendWhereSql(modelInfo.Criterias);
 
             return sb.ToString();
         }
 
         public string GetSelectAllSql() {
-            if (UseSqlTemplate(base.DmlInfo.SqlTemplate)) return GenDirectSql(null);
+            sb = new StringBuilder();
             NecessaryCheck();
 
-            sb = new StringBuilder();
             sb.Append("select ");
             base.AppendCols(base.DmlInfo.Columns, ',');
             sb.Append(TEXT_FROM_WITH_SPACE);

@@ -20,6 +20,7 @@ namespace Kai.Universal.Builder {
         }
 
         public KaiSqlBuilder SetDmlInfos (List<DmlInfoExtension> dmlInfos) {
+            if (dmlInfos == null || dmlInfos.Count == 0) return this;
             Dictionary<string, Dictionary<string, DmlHandler>> dmlHandlers = new Dictionary<string, Dictionary<string, DmlHandler>> ();
             sqlHelper.DmlInfos = dmlInfos;
             foreach (var dmlInfo in dmlInfos) {
@@ -39,6 +40,7 @@ namespace Kai.Universal.Builder {
         }
 
         public KaiSqlBuilder SetCriteriaStrategies (List<CriteriaStrategy> criteriaStrategies) {
+            if (criteriaStrategies == null || criteriaStrategies.Count == 0) return this;
             Dictionary<string, CriteriaStrategyContainer> containers = new Dictionary<string, CriteriaStrategyContainer> ();
             foreach (var criteriaStrategy in criteriaStrategies) {
                 var criteriaId = criteriaStrategy.CriteriaId;

@@ -9,6 +9,7 @@ using System.Threading;
 namespace Kai.Universal.Sql.Handler {
     public class DmlHandler {
 
+        private object _locker = new object();
         public AbstractSqlClause Clause { get; set; }
 
         public DmlHandler() { }
@@ -57,14 +58,13 @@ namespace Kai.Universal.Sql.Handler {
         }
 
         public string GetSql(ModelInfo modelInfo) {
-            var __lock = new object();
             bool __isLocked = false;
             try {
 #if NETSTANDARD2_0
-                Monitor.Enter(__lock, ref __isLocked);
+                Monitor.Enter(_locker, ref __isLocked);
 #else
                 __isLocked = true;
-                Monitor.Enter(__lock);
+                Monitor.Enter(_locker);
 #endif
                 if (modelInfo == null) return Clause.GetSql(null);
                 SqlGeneratorMode mode = modelInfo.Mode;
@@ -76,19 +76,18 @@ namespace Kai.Universal.Sql.Handler {
                         return Clause.GetSql(modelInfo);
                 }
             } finally {
-                if (__isLocked) Monitor.Exit(__lock);
+                if (__isLocked) Monitor.Exit(_locker);
             }
         }
 
         public string GetSql(QueryType queryType, ModelInfo modelInfo) {
-            var __lock = new object();
             bool __isLocked = false;
             try {
 #if NETSTANDARD2_0
-                Monitor.Enter(__lock, ref __isLocked);
+                Monitor.Enter(_locker, ref __isLocked);
 #else
                 __isLocked = true;
-                Monitor.Enter(__lock);
+                Monitor.Enter(_locker);
 #endif
                 if (modelInfo == null) return Clause.GetSql(null);
                 SqlGeneratorMode mode = modelInfo.Mode;
@@ -121,7 +120,7 @@ namespace Kai.Universal.Sql.Handler {
                         return Clause.GetSql(modelInfo);
                 }
             } finally {
-                if (__isLocked) Monitor.Exit(__lock);
+                if (__isLocked) Monitor.Exit(_locker);
             }
         }
 

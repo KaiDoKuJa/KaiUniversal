@@ -1,5 +1,4 @@
-﻿using Kai.Universal.Sql.Result;
-using Kai.Universal.Sql.Where;
+﻿using Kai.Universal.Sql.Where;
 using System;
 using System.Collections.Generic;
 
@@ -18,8 +17,6 @@ namespace Kai.Universal.Data {
         public int Top { get; set; }
         public int PageNumber { get; set; }
         public int EachPageSize { get; set; }
-
-        public SqlGeneratorMode Mode { get; set; }
 
         public ModelInfo() { }
         public ModelInfo(Object model) {

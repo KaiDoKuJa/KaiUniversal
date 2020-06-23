@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Kai.Universal.Data;
 using Kai.Universal.DataModel;
 using Kai.Universal.Helper;
+using Kai.Universal.Sql.Clause;
 using Kai.Universal.Sql.Handler;
 using Kai.Universal.Sql.Type;
 using Kai.Universal.Sql.Where;
@@ -107,7 +108,7 @@ namespace Kai.Universal.Utility {
                 if (!string.IsNullOrWhiteSpace(colName)) {
                     Criteria criteria = RaiseCriteria(vo, data, isMapModel);
                     if (criteria != null) {
-                        r.Value = " and " + CriteriaUtility.GetCriteriaSql(criteria);
+                        r.Value = " and " + criteria.GetSql();//CriteriaUtility.GetCriteriaSql(criteria);
                         rPool.Add(r);
                     }
                 } else {
@@ -183,14 +184,14 @@ namespace Kai.Universal.Utility {
                 var array = new object[list.Count];
                 list.CopyTo(array, 0);
                 if (list.Count > 0) {
-                    s = CriteriaUtility.GetCriteriaValues(array);
+                    s = OrmUtility.GetArraySqlString(array);
                 }
             } else if (value is string x) {
                 if (!string.IsNullOrWhiteSpace(x)) {
-                    s = CriteriaUtility.GetCriteriaValue(x);
+                    s = OrmUtility.GetSqlString(x);
                 }
             } else {
-                s = CriteriaUtility.GetCriteriaValue(value);
+                s = OrmUtility.GetSqlString(value);
             }
             return s;
         }

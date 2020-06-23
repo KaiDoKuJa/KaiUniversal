@@ -1,6 +1,7 @@
 ﻿using Kai.Universal.Sql.Text;
 using Kai.Universal.Text;
 using System;
+using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
     public class OrmUtility {
@@ -42,6 +43,17 @@ namespace Kai.Universal.Sql.Clause {
                 // no support date, because the date format too much kind, plz use string!
                 return string.Format("'{0}'", propValue.ToString());
             }
+        }
+
+        public static string GetArraySqlString(object[] vals) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < vals.Length; i++) {
+                if (i > 0) {
+                    sb.Append(",");
+                }
+                sb.Append(OrmUtility.GetSqlString(vals[i]));
+            }
+            return sb.ToString();
         }
     }
 }

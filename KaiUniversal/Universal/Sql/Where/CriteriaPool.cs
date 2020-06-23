@@ -30,23 +30,16 @@ namespace Kai.Universal.Sql.Where {
                 criterias.Add(c);
             }
         }
-
         public string GetWhereSql() {
-            if (!isCompleted) {
-                sb = new StringBuilder();
-
-                for (int i = 0; i < criterias.Count; i++) {
-                    if (i > 0) {
-                        sb.Append("and ");
-                    }
-                    sb.Append(CriteriaUtility.GetCriteriaSql(criterias[i]));
-                }
-
-                isCompleted = true;
+            if (isCompleted) return sb.ToString();
+            isCompleted = true;
+            sb = new StringBuilder("and ");
+            foreach (var item in criterias) {
+                sb.Append(item.GetSql());
             }
-
             return sb.ToString();
         }
+     
 
     }
 }

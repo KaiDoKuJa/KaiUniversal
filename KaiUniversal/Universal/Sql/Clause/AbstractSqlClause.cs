@@ -81,10 +81,6 @@ namespace Kai.Universal.Sql.Clause {
             return sb.ToString();
         }
 
-        public string GetPreparedSql(ModelInfo modelInfo) {
-            throw new NotImplementedException("not implement");
-        }
-
         public string GetLastSql() {
             if (sb != null)
                 return sb.ToString();

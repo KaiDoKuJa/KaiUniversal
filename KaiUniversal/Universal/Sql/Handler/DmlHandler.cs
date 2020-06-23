@@ -1,7 +1,6 @@
 ﻿using Kai.Universal.Data;
 using Kai.Universal.Sql.Clause;
 using Kai.Universal.Sql.Clause.Dialect;
-using Kai.Universal.Sql.Result;
 using Kai.Universal.Sql.Type;
 using System;
 using System.Threading;
@@ -67,14 +66,7 @@ namespace Kai.Universal.Sql.Handler {
                 Monitor.Enter(_locker);
 #endif
                 if (modelInfo == null) return Clause.GetSql(null);
-                SqlGeneratorMode mode = modelInfo.Mode;
-                switch (mode) {
-                    case SqlGeneratorMode.PreparedStatement:
-                        return Clause.GetPreparedSql(modelInfo);
-                    case SqlGeneratorMode.Statement:
-                    default:
-                        return Clause.GetSql(modelInfo);
-                }
+                return Clause.GetSql(modelInfo);
             } finally {
                 if (__isLocked) Monitor.Exit(_locker);
             }
@@ -90,35 +82,30 @@ namespace Kai.Universal.Sql.Handler {
                 Monitor.Enter(_locker);
 #endif
                 if (modelInfo == null) return Clause.GetSql(null);
-                SqlGeneratorMode mode = modelInfo.Mode;
-                switch (mode) {
-                    case SqlGeneratorMode.PreparedStatement:
-                        return Clause.GetPreparedSql(modelInfo);
-                    default:
-                        var limitingResultClause = Clause as ILimitingResultClause;
-                        if (limitingResultClause != null) {
-                            switch (queryType) {
-                                case QueryType.SelectPaging:
-                                    return limitingResultClause.GetPagingSql(modelInfo);
-                                case QueryType.SelectTop:
-                                    return limitingResultClause.GetFetchFirstSql(modelInfo);
-                                default:
-                                    break;
-                            }
-                        }
-                        var queryClause = Clause as QueryClause;
-                        if (queryClause != null) {
-                            switch (queryType) {
-                                case QueryType.SelectAll:
-                                    return queryClause.GetSelectAllSql();
-                                case QueryType.SelectCnt:
-                                    return queryClause.GetSelectCntSql(modelInfo);
-                                default:
-                                    break;
-                            }
-                        }
-                        return Clause.GetSql(modelInfo);
+
+                var limitingResultClause = Clause as ILimitingResultClause;
+                if (limitingResultClause != null) {
+                    switch (queryType) {
+                        case QueryType.SelectPaging:
+                            return limitingResultClause.GetPagingSql(modelInfo);
+                        case QueryType.SelectTop:
+                            return limitingResultClause.GetFetchFirstSql(modelInfo);
+                        default:
+                            break;
+                    }
                 }
+                var queryClause = Clause as QueryClause;
+                if (queryClause != null) {
+                    switch (queryType) {
+                        case QueryType.SelectAll:
+                            return queryClause.GetSelectAllSql();
+                        case QueryType.SelectCnt:
+                            return queryClause.GetSelectCntSql(modelInfo);
+                        default:
+                            break;
+                    }
+                }
+                return Clause.GetSql(modelInfo);
             } finally {
                 if (__isLocked) Monitor.Exit(_locker);
             }

@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net45;net35</TargetFrameworks>
     <RootNamespace>Kai</RootNamespace>
-    <Version>2.0.5</Version>
+    <Version>2.0.6</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>KaiDoKuJa</Authors>
     <Company>KaiDoKuGroup</Company>
@@ -17,15 +17,6 @@
     <PackageReference Include="Microsoft.Data.SqlClient">
       <Version>1.1.1</Version>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Universal\Sql\Result\SqlGeneratorMode.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Universal\Handle\" />
-    <Folder Include="Universal\Sql\Result\" />
   </ItemGroup>
 
 </Project>

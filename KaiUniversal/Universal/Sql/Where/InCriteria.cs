@@ -12,7 +12,7 @@ namespace Kai.Universal.Sql.Where {
               .Append(base.Symbol);
             if (base.ColValues != null && base.ColValues.Length > 0) {
                 sb.Append("(")
-                  .Append(OrmUtility.GetSqlString(base.ColValues))
+                  .Append(OrmUtility.GetArraySqlString(base.ColValues))
                   .Append(")");
             } else if (base.ColValue != null) {
                 var specialString = base.ColValue as SpecialString;

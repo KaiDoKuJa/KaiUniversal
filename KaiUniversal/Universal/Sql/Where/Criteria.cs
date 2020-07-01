@@ -69,14 +69,15 @@ namespace Kai.Universal.Sql.Where {
             Criteria c = new InCriteria();
             c.ColName = col;
             c.ColValues = vals;
+            c.Symbol = " in ";
             return c;
         }
 
         public static Criteria AndEmptyCondition(string col) {
             Criteria c = new CompareCriteria();
             c.ColName = col;
-            c.Symbol = " = ";
             c.ColValue = "";
+            c.Symbol = " = ";
             return c;
         }
 

@@ -8,7 +8,7 @@ namespace Kai.Universal.Db {
     public class SimpleDataSource {
 
         public string ConnectionString { get; set; }
-        public Cryptology Cryptology { get; set; }
+        public ICryptology Cryptology { get; set; }
 
         public void DecryptConnectionString() {
             if (Cryptology != null) {

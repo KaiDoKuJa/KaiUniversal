@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+#if !NET20
 using System.Linq;
+#endif
 
 namespace Kai.Universal.Db {
 
@@ -38,8 +40,6 @@ namespace Kai.Universal.Db {
                 if (result != null) {
                     count = Int32.Parse(result.ToString());
                 }
-            } catch {
-                throw;
             } finally {
                 CloseUtility.DisposeSqlCommmand(ref command);
             }
@@ -142,10 +142,6 @@ namespace Kai.Universal.Db {
             return fetch.GetResult();
         }
 
-        public static Object getKeyFromInserted(DbCommand command, String sql) {
-            throw new NotSupportedException("C# not support");
-        }
-
         public static int ExecuteNonQuery(DbConnection connection, string sql) {
             int count = -1;
 
@@ -188,7 +184,7 @@ namespace Kai.Universal.Db {
                     result++;
                 }
             } catch (Exception e) {
-                int n = result + 1;
+                int n = result;
                 if (n > 0) {
                     string errMsg = String.Format(EXEC_NON_QUERIES_ERR, n + 1, sqls[n]);
                     throw new InvalidOperationException(errMsg, e);
@@ -227,7 +223,11 @@ namespace Kai.Universal.Db {
         }
 
         public static bool ExecuteNonQueries(DbConnection connection, string[] sqls) {
+#if !NET20
             return ExecuteNonQueries(connection, sqls.ToList());
+#else      
+            return ExecuteNonQueries(connection, new List<string>(sqls));
+#endif
         }
 
         public static void RollbackTransaction(ref DbTransaction transaction) {
@@ -236,6 +236,7 @@ namespace Kai.Universal.Db {
                     transaction.Rollback();
                 }
             } catch {
+                // do nothing
             } finally {
                 transaction = null;
             }

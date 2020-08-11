@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Kai.Universal.Data;
+﻿using Kai.Universal.Data;
 using Kai.Universal.DataModel;
 using Kai.Universal.Sql.Handler;
 using Kai.Universal.Sql.Type;
 using Kai.Universal.Utility;
+using System.Collections.Generic;
 
 namespace Kai.Universal.Helper {
     public class KaiSqlHelper {
@@ -16,7 +16,7 @@ namespace Kai.Universal.Helper {
         public Dictionary<string, CriteriaStrategyContainer> CriteriaStrategyContainers { get; set; }
 
         public DmlInfoExtension GetDmlInfo(string dmlId, string groupId) {
-            if (string.IsNullOrWhiteSpace(dmlId) || string.IsNullOrWhiteSpace(groupId)) return null;
+            if (KaiSqlUtility.IsNullOrWhiteSpace(dmlId) || KaiSqlUtility.IsNullOrWhiteSpace(groupId)) return null;
             if (DmlInfos == null || DmlInfos.Count == 0) return null;
             foreach (var item in DmlInfos) {
                 if (dmlId.Equals(item.DmlId) && groupId.Equals(item.GroupId))

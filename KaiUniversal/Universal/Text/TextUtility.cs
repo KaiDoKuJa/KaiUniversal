@@ -1,5 +1,7 @@
 ﻿using System;
+#if !NET20
 using System.Linq;
+#endif
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -23,8 +25,15 @@ namespace Kai.Universal.Text {
             string caseString = Char.ToUpper(s[0]) + s.Substring(1);
 
             Regex upperCaseRegex = new Regex(@"[A-Z]{1}[a-z]*");
+#if !NET20
             string[] words = upperCaseRegex.Matches(caseString).Cast<Match>().Select(m => m.Value).ToArray();
-
+#else
+            var matches = upperCaseRegex.Matches(caseString);
+            string[] words = new string[matches.Count];
+            for (int i = 0; i < matches.Count; i++) {
+                words[i] = matches[i].Value;
+            }
+#endif
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < words.Length; i++) {
                 if (i > 0) {

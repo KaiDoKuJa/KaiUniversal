@@ -2,13 +2,12 @@
 using Kai.Universal.Sql.Clause;
 using Kai.Universal.Sql.Clause.Dialect;
 using Kai.Universal.Sql.Type;
-using System;
 using System.Threading;
 
 namespace Kai.Universal.Sql.Handler {
     public class DmlHandler {
 
-        private object _locker = new object();
+        private readonly object _locker = new object();
         public AbstractSqlClause Clause { get; set; }
 
         public DmlHandler() { }
@@ -26,7 +25,7 @@ namespace Kai.Universal.Sql.Handler {
         }
 
         private static AbstractSqlClause CreateClause(DbmsType dbmsType, DmlInfo dmlInfo) {
-            AbstractSqlClause clause = null;
+            AbstractSqlClause clause;
             switch (dmlInfo.DmlType) {
                 case DmlType.Select:
                     switch (dbmsType) {
@@ -49,7 +48,7 @@ namespace Kai.Universal.Sql.Handler {
                     clause = new DeleteClause();
                     break;
                 default:
-                    throw new Exception("no such dml type!");
+                    return null;
             }
             clause.DmlInfo = dmlInfo;
             clause.DbmsType = dbmsType;

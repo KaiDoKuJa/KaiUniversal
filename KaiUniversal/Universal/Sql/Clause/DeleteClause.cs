@@ -1,6 +1,5 @@
 ﻿using Kai.Universal.Data;
 using System;
-using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
     public class DeleteClause : UpdateClause {

@@ -11,11 +11,9 @@ namespace Kai.Universal.Text {
      * property - .Net property //public object A {get;set;}
      * field  - public variable //public object a;
      * methodinfo - GetXxx SetXxx
-     * 2020/2/22 : 預設不使用fieldInfo or methodInfo的判斷
+     * 2020/2/22 : default no use fieldInfo or methodInfo
      **/
-    public class ReflectUtility {
-
-        private ReflectUtility() { }
+    public static class ReflectUtility {
 
         public static void SetValue(object model, string variableName, object val) {
             if (model == null || variableName == null || "".Equals(variableName.Trim())
@@ -25,22 +23,27 @@ namespace Kai.Universal.Text {
             if (property != null) {
                 try {
                     SetPropertyValue(property, model, val);
-                } catch { }
+                } catch { 
+                    // do nothing
+                }
             }
         }
 
         private static void SetPropertyValue(PropertyInfo property, object model, object val) {
             Type propertyType = property.PropertyType;
             Type variableType = val.GetType();
-            if (variableType.Equals(propertyType) || propertyType.IsAssignableFrom(variableType)) { // 同型態
+            if (variableType.Equals(propertyType) || propertyType.IsAssignableFrom(variableType)) { // same type
                 property.SetValue(model, val, null);
-            } else if (typeof(string).Equals(propertyType)) { // 標的屬性string
+            } else if (typeof(string).Equals(propertyType)) { // property type is string
                 property.SetValue(model, GetValueString(val), null);
-            } else if (typeof(string).Equals(variableType) && propertyType.IsEnum) { // 標的Enum 來源string
-                // TODO : val == "" or val is not really enum type
-                object val2Enum = Enum.Parse(propertyType, (string)val, true);
-                property.SetValue(model, val2Enum, null);
-            } else if (val != DBNull.Value) {
+            } else if (typeof(string).Equals(variableType) && propertyType.IsEnum) { // val type is string and property is enum
+                try {
+                    object val2Enum = Enum.Parse(propertyType, (string)val, true);
+                    property.SetValue(model, val2Enum, null);
+                } catch {
+                    // do nothing (val is empty or val is not really enum type)
+                }
+            } else if (val != DBNull.Value) { // other not dbnull type
                 property.SetValue(model, val, null);
             }
         }
@@ -59,7 +62,7 @@ namespace Kai.Universal.Text {
             return val.ToString();
         }
 
-        //用這個取帶java modelFetch 裡的getField, 因為 c# field/prop各自不同，java的部分要改名為var避免兩種混淆
+        //用這個取代java modelFetch 裡的getField, 因為 c# field/prop各自不同，java的部分要改名為var避免兩種混淆
         public static bool HasVariable(Type classOfT, string variableName, Type variableType, bool isFieldNameUpperCase = true) {
             bool result = false;
             string propertyName = isFieldNameUpperCase ? variableName : TextUtility.ConvertWordCase(variableName, WordCase.LowerCamel, WordCase.UpperCamel);
@@ -77,11 +80,6 @@ namespace Kai.Universal.Text {
             }
 
             return result;
-        }
-
-        public static FieldInfo GetField(Type type, String fieldName) {
-            // property or field  TODO : 這個仍要在改寫只是先完成出來而以  set/get or GetXxx/SetXxx
-            return type.GetField(fieldName, BindingFlags.Instance | BindingFlags.Public);
         }
 
         public static object GetValue(object model, string variableName) {

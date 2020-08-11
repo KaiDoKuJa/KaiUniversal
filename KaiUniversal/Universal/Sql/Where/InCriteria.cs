@@ -1,6 +1,5 @@
 ﻿using Kai.Universal.Sql.Clause;
 using Kai.Universal.Sql.Text;
-using System;
 using System.Text;
 
 namespace Kai.Universal.Sql.Where {

@@ -19,7 +19,7 @@ namespace Kai.Universal.Crypto {
      *
      * @author KaiDoKuJa
      */
-    public class SimpleAesCrypto : Cryptology {
+    public class SimpleAesCrypto : ICryptology {
 
         private byte[] crptoKey;
 
@@ -50,8 +50,6 @@ namespace Kai.Universal.Crypto {
                 }
 
                 result = sb.ToString();
-            } catch (Exception e) {
-                throw e;
             } finally {
                 if (cs != null)
                     cs.Dispose();
@@ -85,8 +83,6 @@ namespace Kai.Universal.Crypto {
                 cs.FlushFinalBlock();
 
                 result = encoding.GetString(ms.ToArray());
-            } catch (Exception e) {
-                throw e;
             } finally {
                 if (cs != null)
                     cs.Dispose();
@@ -114,16 +110,10 @@ namespace Kai.Universal.Crypto {
         }
 
         private AesCryptoServiceProvider GetProvider() {
-            AesCryptoServiceProvider provider = null;
-
-            try {
-                provider = new AesCryptoServiceProvider();
-                provider.Mode = CipherMode.ECB;
-                provider.Padding = PaddingMode.PKCS7;
-                provider.Key = crptoKey;
-            } catch (Exception e) {
-                throw e;
-            }
+            AesCryptoServiceProvider provider = new AesCryptoServiceProvider();
+            provider.Mode = CipherMode.ECB;
+            provider.Padding = PaddingMode.PKCS7;
+            provider.Key = crptoKey;
 
             return provider;
         }

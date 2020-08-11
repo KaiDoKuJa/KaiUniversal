@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Kai.Universal.Data;
+﻿using Kai.Universal.Data;
 using Kai.Universal.DataModel;
-using Kai.Universal.Helper;
 using Kai.Universal.Sql.Clause;
-using Kai.Universal.Sql.Handler;
-using Kai.Universal.Sql.Type;
 using Kai.Universal.Sql.Where;
 using Kai.Universal.Text;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Kai.Universal.Utility {
     //  com.kai.web.common.util > DynamicSqlUtil.java
@@ -62,7 +58,7 @@ namespace Kai.Universal.Utility {
 
                 string colName = vo.ColName;
                 string s = GetSqlString(value);
-                if (string.IsNullOrWhiteSpace(colName) || string.IsNullOrWhiteSpace(s)) {
+                if (IsNullOrWhiteSpace(colName) || IsNullOrWhiteSpace(s)) {
                     continue;
                 }
                 criteriaPool.AddCriteria(Criteria.AndCondition(colName.Replace(vo.ReplacePattern, s)));
@@ -75,7 +71,7 @@ namespace Kai.Universal.Utility {
             // 使用colName, criteriaType, value
             foreach (CriteriaStrategy vo in criterias) {
                 string colName = vo.ColName;
-                if (string.IsNullOrWhiteSpace(colName)) {
+                if (IsNullOrWhiteSpace(colName)) {
                     continue;
                 }
 
@@ -105,10 +101,10 @@ namespace Kai.Universal.Utility {
                 string colName = vo.ColName;
 
                 r.ReplacePattern = vo.ReplacePattern;
-                if (!string.IsNullOrWhiteSpace(colName)) {
+                if (!IsNullOrWhiteSpace(colName)) {
                     Criteria criteria = RaiseCriteria(vo, data, isMapModel);
                     if (criteria != null) {
-                        r.Value = " and " + criteria.GetSql();//CriteriaUtility.GetCriteriaSql(criteria);
+                        r.Value = " and " + criteria.GetSql();
                         rPool.Add(r);
                     }
                 } else {
@@ -120,7 +116,7 @@ namespace Kai.Universal.Utility {
                         value = ReflectUtility.GetValue(data, vo.ColMapping);
                     }
                     string s = GetSqlString(value);
-                    if (!string.IsNullOrWhiteSpace(s)) {
+                    if (!IsNullOrWhiteSpace(s)) {
                         r.Value = s;
                         rPool.Add(r);
                     }
@@ -146,11 +142,12 @@ namespace Kai.Universal.Utility {
                     value = ReflectUtility.GetValue(data, vo.ColMapping);
                 }
 
+                if (value == null) return result;
+
                 if (CriteriaType.In != vo.CriteriaType) {
                     result = Criteria.AndCondition(vo.ColName, vo.CriteriaType, value);
                 } else {
                     if (ReflectUtility.IsList(value)) {
-                        // TODO : 需驗證 UT
                         var list = (IList)value;
                         var array = new object[list.Count];
                         list.CopyTo(array, 0);
@@ -179,7 +176,6 @@ namespace Kai.Universal.Utility {
             if (value == null) return null;
             string s = null;
             if (ReflectUtility.IsList(value)) {
-                // TODO : 需驗證 UT
                 var list = (IList)value;
                 var array = new object[list.Count];
                 list.CopyTo(array, 0);
@@ -187,7 +183,7 @@ namespace Kai.Universal.Utility {
                     s = OrmUtility.GetArraySqlString(array);
                 }
             } else if (value is string x) {
-                if (!string.IsNullOrWhiteSpace(x)) {
+                if (!IsNullOrWhiteSpace(x)) {
                     s = OrmUtility.GetSqlString(x);
                 }
             } else {
@@ -196,5 +192,16 @@ namespace Kai.Universal.Utility {
             return s;
         }
 
+        public static bool IsNullOrWhiteSpace(string value) {
+            if (value == null) {
+                return true;
+            }
+            for (int i = 0; i < value.Length; i++) {
+                if (!char.IsWhiteSpace(value[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

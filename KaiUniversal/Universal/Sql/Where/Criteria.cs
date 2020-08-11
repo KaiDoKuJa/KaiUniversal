@@ -1,5 +1,7 @@
 using System;
+#if !NET20
 using System.Linq;
+#endif
 
 namespace Kai.Universal.Sql.Where {
 
@@ -50,15 +52,18 @@ namespace Kai.Universal.Sql.Where {
 
         private static Criteria GetCriteriaByType(CriteriaType criteriaType) {
             var attr = GetAttribute(criteriaType);
-            var c = (Criteria) Activator.CreateInstance(attr.TypeofCriteria);
+            var c = (Criteria)Activator.CreateInstance(attr.TypeofCriteria);
             c.Symbol = attr.Symbol;
             return c;
         }
         private static CriteriaReflectAttribute GetAttribute(CriteriaType value) {
             var enumType = value.GetType();
             var name = Enum.GetName(enumType, value);
-            //value.GetType().GetProperties().FirstOrDefault()
+#if !NET20
             return enumType.GetField(name).GetCustomAttributes(false).OfType<CriteriaReflectAttribute>().SingleOrDefault();
+#else
+            return (CriteriaReflectAttribute)enumType.GetField(name).GetCustomAttributes(typeof(CriteriaReflectAttribute), false)[0];
+#endif
         }
 
         public static Criteria AndInCondition(string col, object[] vals) {
@@ -96,6 +101,6 @@ namespace Kai.Universal.Sql.Where {
             c.Symbol = " is not null";
             return c;
         }
-        
+
     }
 }

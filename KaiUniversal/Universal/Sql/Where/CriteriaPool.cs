@@ -42,7 +42,7 @@ namespace Kai.Universal.Sql.Where {
             }
             return sb.ToString();
         }
-     
+
 
     }
 }

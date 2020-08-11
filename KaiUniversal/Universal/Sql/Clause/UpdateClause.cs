@@ -2,7 +2,6 @@
 using Kai.Universal.Text;
 using System;
 using System.Collections;
-using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
     public class UpdateClause : AbstractSqlClause {

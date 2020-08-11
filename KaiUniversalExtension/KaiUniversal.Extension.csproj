@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;net40;net35;net20;netstandard2.0</TargetFrameworks>
+    <RootNamespace>Kai</RootNamespace>
+    <Version>2.0.6.1</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>KaiDoKuJa</Authors>
+    <Company>KaiDoKuGroup</Company>
+    <PackageId>Kai.Universal.Extension</PackageId>
+    <Product>Kai.Universal</Product>
+    <Description>KaiUniversal extension utility</Description>
+    <RepositoryUrl>https://github.com/KaiDoKuJa/KaiUniversal</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © KaiDoKuJa 2016</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KaiUniversal\KaiUniversal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
+  </ItemGroup>
+</Project>

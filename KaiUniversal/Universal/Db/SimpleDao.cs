@@ -20,8 +20,6 @@ namespace Kai.Universal.Db {
                 connection = this.GetConnection();
                 connection.Open();
                 count = SimpleDbcUtility.GetSelectCount(connection, sql);
-            } catch {
-                throw;
             } finally {
                 CloseUtility.CloseConnection(ref connection);
             }
@@ -37,8 +35,6 @@ namespace Kai.Universal.Db {
                 connection = this.GetConnection();
                 connection.Open();
                 res = SimpleDbcUtility.GetData<T>(connection, commandTimeout, sql);
-            } catch {
-                throw;
             } finally {
                 CloseUtility.CloseConnection(ref connection);
             }
@@ -98,8 +94,6 @@ namespace Kai.Universal.Db {
                     connection = this.GetConnection();
                     connection.Open();
                     dt = SimpleDbcUtility.GetDataTable(connection, commandTimeout, sql);
-                } catch {
-                    throw;
                 } finally {
                     CloseUtility.CloseConnection(ref connection);
                 }
@@ -121,8 +115,6 @@ namespace Kai.Universal.Db {
                 connection = this.GetConnection();
                 connection.Open();
                 count = SimpleDbcUtility.ExecuteNonQuery(connection, sql);
-            } catch {
-                throw;
             } finally {
                 CloseUtility.CloseConnection(ref connection);
             }
@@ -139,8 +131,6 @@ namespace Kai.Universal.Db {
                 connection = this.GetConnection();
                 connection.Open();
                 result = SimpleDbcUtility.ExecuteNonQueries(connection, sqls);
-            } catch {
-                throw;
             } finally {
                 CloseUtility.CloseConnection(ref connection);
             }
@@ -157,8 +147,6 @@ namespace Kai.Universal.Db {
                 connection = this.GetConnection();
                 connection.Open();
                 result = SimpleDbcUtility.ExecuteNonQueries(connection, sqls);
-            } catch {
-                throw;
             } finally {
                 CloseUtility.CloseConnection(ref connection);
             }

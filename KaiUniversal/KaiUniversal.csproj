@@ -1,22 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;net35</TargetFrameworks>
+    <TargetFrameworks>net45;net40;net35;net20;netstandard2.0</TargetFrameworks>
     <RootNamespace>Kai</RootNamespace>
-    <Version>2.0.6</Version>
+    <Version>2.0.6.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>KaiDoKuJa</Authors>
     <Company>KaiDoKuGroup</Company>
     <PackageId>Kai.Universal</PackageId>
     <Product>Kai.Universal</Product>
-    <Description>KaiUniversal is an ORM framework with no dependency.</Description>
-    <RepositoryUrl>https://bitbucket.org/KaiDoKuJa/kaiuniversal</RepositoryUrl>
+    <Description>KaiUniversal is a lightweight ORM framework. This provides an easy way of generating syntactically correct SQL.</Description>
+    <RepositoryUrl>https://github.com/KaiDoKuJa/KaiUniversal</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © KaiDoKuJa 2016</Copyright>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>1.1.1</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.1.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net20'">
+    <Compile Remove="Universal\Crypto\SimpleAesCrypto.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+      <None Include="..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
+  </ItemGroup>
+  
 </Project>

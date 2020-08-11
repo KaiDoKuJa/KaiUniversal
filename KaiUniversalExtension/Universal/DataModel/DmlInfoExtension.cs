@@ -8,9 +8,7 @@ namespace Kai.Universal.DataModel {
 
         public string CriteriaId { get; set; }
         public string ConnectionId { get; set; }
-        //public string Usage { get; set; }
         public string Descript { get; set; }
-        //public string Remark { get; set; }
 
     }
 }

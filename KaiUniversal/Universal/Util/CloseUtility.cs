@@ -9,7 +9,9 @@ namespace Kai.Universal.Util {
                 if (connection != null) {
                     connection.Close();
                 }
-            } catch { }
+            } catch {
+                // do nothing
+            }
         }
 
         public static void CloseDataReader(ref DbDataReader reader) {
@@ -17,7 +19,9 @@ namespace Kai.Universal.Util {
                 if (reader != null) {
                     reader.Close();
                 }
-            } catch { }
+            } catch {
+                // do nothing
+            }
         }
 
         public static void DisposeSqlCommmand(ref DbCommand command) {
@@ -26,7 +30,9 @@ namespace Kai.Universal.Util {
                     command.Dispose();
                 }
             } catch {
-            } finally { }
+                // do nothing
+            }
         }
     }
 }
+

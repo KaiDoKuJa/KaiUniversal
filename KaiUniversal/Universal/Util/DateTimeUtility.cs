@@ -13,6 +13,5 @@ namespace Kai.Universal.Util {
 
         private DateTimeUtility() { }
 
-        //TODO : java有其他api
     }
 }

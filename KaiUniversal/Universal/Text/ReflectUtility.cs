@@ -23,7 +23,7 @@ namespace Kai.Universal.Text {
             if (property != null) {
                 try {
                     SetPropertyValue(property, model, val);
-                } catch { 
+                } catch {
                     // do nothing
                 }
             }

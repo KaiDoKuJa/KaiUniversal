@@ -63,6 +63,11 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
+        /// <summary>
+        /// Main generate sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
+        /// <returns></returns>
         public string GetSql(ModelInfo modelInfo) {
             if (DmlInfo == null) throw new ArgumentNullException(NO_DML_INFO);
             sb = new StringBuilder();
@@ -81,6 +86,10 @@ namespace Kai.Universal.Sql.Clause {
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Get generated sql, if not generate will be call GetSql(null).
+        /// </summary>
+        /// <returns></returns>
         public string GetLastSql() {
             if (sb != null)
                 return sb.ToString();
@@ -93,20 +102,36 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
+        /// <summary>
+        /// check {TableName} is empty
+        /// </summary>
+        /// <returns></returns>
         public bool IsEmptyTableName() {
             return (DmlInfo.TableName == null || "".Equals(DmlInfo.TableName));
         }
 
+        /// <summary>
+        /// check {Columns} is empty
+        /// </summary>
+        /// <returns></returns>
         public bool IsEmptyColumns() {
             string[] columns = DmlInfo.Columns;
             return OrmUtility.IsArrayEmpty(columns);
         }
 
+        /// <summary>
+        /// check {NonQueryMandatoryColumns} is empty
+        /// </summary>
+        /// <returns></returns>
         public bool IsEmptyNonQueryMandatoryColumns() {
             string[] columns = DmlInfo.NonQueryMandatoryColumns;
             return OrmUtility.IsArrayEmpty(columns);
         }
 
+        /// <summary>
+        /// check {NoAttachQuoteColumns} is empty
+        /// </summary>
+        /// <returns></returns>
         public bool IsNoAttachQuoteColumn(string col) {
             string[] noAttachQuoteColumns = DmlInfo.NoAttachQuoteColumns;
             if (noAttachQuoteColumns == null) return false;

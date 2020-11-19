@@ -1,5 +1,5 @@
 ﻿using Kai.Universal.DataModel;
-using Kai.Universal.Helper;
+using Kai.Universal.Service;
 using Kai.Universal.Sql.Handler;
 using Kai.Universal.Sql.Type;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ namespace Kai.Universal.Builder {
     public class KaiSqlBuilder {
 
         private DbmsType dbmsType;
-        private readonly KaiSqlHelper sqlHelper;
+        private readonly KaiSqlService sqlService;
 
         public KaiSqlBuilder() {
-            sqlHelper = new KaiSqlHelper();
+            sqlService = new KaiSqlService();
         }
 
         public KaiSqlBuilder SetDbmsType(DbmsType dbmsType) {
@@ -22,7 +22,7 @@ namespace Kai.Universal.Builder {
         public KaiSqlBuilder SetDmlInfos(List<DmlInfoExtension> dmlInfos) {
             if (dmlInfos == null || dmlInfos.Count == 0) return this;
             Dictionary<string, Dictionary<string, DmlHandler>> dmlHandlers = new Dictionary<string, Dictionary<string, DmlHandler>>();
-            sqlHelper.DmlInfos = dmlInfos;
+            sqlService.DmlInfos = dmlInfos;
             foreach (var dmlInfo in dmlInfos) {
                 var dmlId = dmlInfo.DmlId;
                 var groupId = dmlInfo.GroupId;
@@ -35,7 +35,7 @@ namespace Kai.Universal.Builder {
                     dmlHandlers.Add(groupId, map);
                 }
             }
-            sqlHelper.DmlHandlers = dmlHandlers;
+            sqlService.DmlHandlers = dmlHandlers;
             return this;
         }
 
@@ -64,12 +64,12 @@ namespace Kai.Universal.Builder {
                         break;
                 }
             }
-            sqlHelper.CriteriaStrategyContainers = containers;
+            sqlService.CriteriaStrategyContainers = containers;
             return this;
         }
 
-        public KaiSqlHelper Build() {
-            return this.sqlHelper;
+        public KaiSqlService Build() {
+            return this.sqlService;
         }
 
     }

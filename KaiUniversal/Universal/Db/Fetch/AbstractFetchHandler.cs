@@ -31,7 +31,7 @@ namespace Kai.Universal.Db.Fetch {
                 command = connection.CreateCommand();
                 command.CommandText = sql;
                 command.CommandType = CommandType.Text;
-                if (CommandTimeout != 0) {
+                if (CommandTimeout > 0) {
                     command.CommandTimeout = this.CommandTimeout;
                 }
 

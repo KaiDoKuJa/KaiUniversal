@@ -16,9 +16,9 @@ namespace UnitTestCore.Sample {
             //var n = i.GetSection("dmlInfos").Get<List<DmlInfoExtension>>();
             var n = new List<DmlInfoExtension>();
 
-            KaiSqlHelper helper = new KaiSqlBuilder().SetDmlInfos(n).Build();
-            string sql = helper.GetSelectCntSql("employeeByCfg", "sample", null);
-            string sql2 = helper.GetSelectCntSql("employeeByDirectSql", "sample", null);
+            var sqlBox = new KaiSqlBuilder().SetDmlInfos(n).Build();
+            string sql = sqlBox.GetSelectCntSql("employeeByCfg", "sample", null);
+            string sql2 = sqlBox.GetSelectCntSql("employeeByDirectSql", "sample", null);
             //i.GetValue<"">
             Console.WriteLine("Hello World!");
 

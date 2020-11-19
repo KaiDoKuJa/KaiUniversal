@@ -6,16 +6,16 @@ namespace Kai.Universal.Data {
 
         public int PageNumber { get; set; }
         public int EachPageSize { get; set; }
-        public int SelectCount { get; set; }
+        public int TotalCount { get; set; }
 
         public List<T> Datas { get; set; }
 
         public bool IsLastPage() {
-            return (PageNumber + 1) * EachPageSize >= SelectCount;
+            return (PageNumber + 1) * EachPageSize >= TotalCount;
         }
 
         public int GetTotalPage() {
-            return (int)Math.Ceiling((double)SelectCount / EachPageSize);
+            return (int)Math.Ceiling((double)TotalCount / EachPageSize);
         }
 
     }

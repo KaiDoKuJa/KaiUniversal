@@ -7,11 +7,18 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Kai.Universal.Utility {
-    //  com.kai.web.common.util > DynamicSqlUtil.java
-    public class KaiSqlUtility {
 
-        private KaiSqlUtility() { }
+    /// <summary>
+    /// KaiSql Utility
+    /// </summary>
+    public static class KaiSqlUtility {
 
+        /// <summary>
+        /// raise ModelInfo
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static ModelInfo RaiseModelInfo(CriteriaStrategyContainer container, object data) {
             if (container == null) return null;
             ModelInfo modelInfo = new ModelInfo();
@@ -35,7 +42,6 @@ namespace Kai.Universal.Utility {
         ///     replacePattern = ${1}
         ///     replaceMode = before
         /// 
-
         /// </summary>
         /// <param name="beforeReplacements"></param>
         /// <param name="data"></param>
@@ -82,10 +88,10 @@ namespace Kai.Universal.Utility {
 
         /// <summary>
         /// AFTER (事後針對TB_MODEL主體)  
-        /// case [without criteria] : "select * from tbl where 1=1 and seq=$1" -> replace $1 by {value}
-        ///                  mandatory params : ColMapping, ReplacePattern
-        /// case [with criteria] : "select * from tbl where 1=1 $1" -> replace $1 by "and {criteria}"
-        ///                  mandatory params : ColName, CriteriaType, ColMapping, ReplacePattern
+        /// <para>case [without criteria] : "select * from tbl where 1=1 and seq=$1" -> replace $1 by {value}
+        ///                  mandatory params : ColMapping, ReplacePattern</para>
+        /// <para>case [with criteria] : "select * from tbl where 1=1 $1" -> replace $1 by "and {criteria}"
+        ///                  mandatory params : ColName, CriteriaType, ColMapping, ReplacePattern</para>
         /// 
         /// </summary>
         /// <param name="afterReplacements"></param>
@@ -192,6 +198,11 @@ namespace Kai.Universal.Utility {
             return s;
         }
 
+        /// <summary>
+        /// is null or whitespace
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static bool IsNullOrWhiteSpace(string value) {
             if (value == null) {
                 return true;

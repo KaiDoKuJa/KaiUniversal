@@ -1,5 +1,4 @@
 ﻿using Kai.Universal.Sql.Where;
-using System;
 using System.Collections.Generic;
 
 namespace Kai.Universal.Data {
@@ -19,7 +18,7 @@ namespace Kai.Universal.Data {
         public int EachPageSize { get; set; }
 
         public ModelInfo() { }
-        public ModelInfo(Object model) {
+        public ModelInfo(object model) {
             this.Model = model;
         }
 

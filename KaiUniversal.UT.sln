@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestCore", "UnitTestCor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KaiUniversal.Extension", "KaiUniversalExtension\KaiUniversal.Extension.csproj", "{467B4E23-C32D-456E-A45B-6F05D5669EB9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KaiUniversal.Json", "KaiUniversalJson\KaiUniversal.Json.csproj", "{5ADE1DF9-4AAF-40A3-A200-7582424C485B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{467B4E23-C32D-456E-A45B-6F05D5669EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{467B4E23-C32D-456E-A45B-6F05D5669EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{467B4E23-C32D-456E-A45B-6F05D5669EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ADE1DF9-4AAF-40A3-A200-7582424C485B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ADE1DF9-4AAF-40A3-A200-7582424C485B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ADE1DF9-4AAF-40A3-A200-7582424C485B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ADE1DF9-4AAF-40A3-A200-7582424C485B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

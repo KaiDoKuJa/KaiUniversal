@@ -1,5 +1,6 @@
 ﻿using ConsoleCore.Dao;
 using Kai.Universal.Data;
+using Kai.Universal.Db.Utility;
 using Kai.Universal.Sql.Clause;
 using Kai.Universal.Sql.Handler;
 using Kai.Universal.Text;
@@ -42,7 +43,7 @@ namespace Kai.Universal.Db {
             Init();
             connection.Open();
             var handler = GetTestSqlHandler();
-            var data = SimpleDbcUtility.GetData<Employees>(connection, handler);
+            var data = ModelDbcUtility.GetData<Employees>(connection, handler);
             Assert.IsNotNull(data);
         }
 
@@ -51,7 +52,7 @@ namespace Kai.Universal.Db {
             Init();
             connection.Open();
             var handler = GetTestSqlHandler();
-            var data = SimpleDbcUtility.GetMapData(connection, handler);
+            var data = MapDataDbcUtility.GetData(connection, handler);
             Assert.IsNotNull(data);
         }
 

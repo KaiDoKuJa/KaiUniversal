@@ -9,7 +9,18 @@ using System.Data.Common;
 
 namespace Kai.Universal.Db.Utility {
 
+    /// <summary>
+    /// Dictionary(k->v) dbc utility
+    /// </summary>
     public static class MapDataDbcUtility {
+
+        /// <summary>
+        /// get data
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         public static List<Dictionary<string, object>> GetData(DbConnection connection, int commandTimeout, String sql) {
             MapDataFetch fetch = new MapDataFetch();
             fetch.CommandTimeout = commandTimeout;
@@ -17,10 +28,22 @@ namespace Kai.Universal.Db.Utility {
             return fetch.GetResult();
         }
 
+        /// <summary>
+        /// get data
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         public static List<Dictionary<string, object>> GetData(DbConnection connection, String sql) {
             return GetData(connection, DbConstant.DEFAULT_COMMAND_TIMEOUT, sql);
         }
 
+        /// <summary>
+        /// get data
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="handler"></param>
+        /// <returns></returns>
         public static List<Dictionary<string, object>> GetData(DbConnection connection, DmlHandler handler) {
             MapDataFetch fetch = new MapDataFetch();
             fetch.DmlInfo = handler.Clause.DmlInfo;
@@ -28,6 +51,13 @@ namespace Kai.Universal.Db.Utility {
             return fetch.GetResult();
         }
 
+        /// <summary>
+        /// get pager data
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="handler"></param>
+        /// <param name="modelInfo"></param>
+        /// <returns></returns>
         public static PagerData<Dictionary<string, object>> GetPagerData(DbConnection connection, DmlHandler handler, ModelInfo modelInfo) {
             PagerData<Dictionary<string, object>> pagerData = new PagerData<Dictionary<string, object>>();
             // select count

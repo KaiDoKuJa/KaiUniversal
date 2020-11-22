@@ -4,6 +4,9 @@ using System;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause {
+    /// <summary>
+    /// the ORM utility
+    /// </summary>
     public class OrmUtility {
         private OrmUtility() { }
 
@@ -22,10 +25,21 @@ namespace Kai.Universal.Sql.Clause {
             return result;
         }
 
+        /// <summary>
+        /// property value to sql string
+        /// </summary>
+        /// <param name="propValue"></param>
+        /// <returns></returns>
         public static string GetSqlString(object propValue) {
             return GetSqlString(propValue, false);
         }
 
+        /// <summary>
+        /// property value to sql string
+        /// </summary>
+        /// <param name="propValue"></param>
+        /// <param name="useUnicodePrefix"></param>
+        /// <returns></returns>
         public static string GetSqlString(object propValue, bool useUnicodePrefix) {
             if (propValue is bool) {
                 var b = (bool)propValue;
@@ -45,6 +59,12 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
+        /// <summary>
+        /// property values to sql string
+        /// <para>ex: new string[] {"a","b"} => 'a','b'</para>
+        /// </summary>
+        /// <param name="vals"></param>
+        /// <returns></returns>
         public static string GetArraySqlString(object[] vals) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < vals.Length; i++) {

@@ -5,20 +5,36 @@ using Kai.Universal.Sql.Type;
 using System.Collections.Generic;
 
 namespace Kai.Universal.Builder {
+    /// <summary>
+    /// KaiSqlBuilder
+    /// </summary>
     public class KaiSqlBuilder {
 
         private DbmsType dbmsType;
         private readonly KaiSqlService sqlService;
 
+        /// <summary>
+        /// default constructor
+        /// </summary>
         public KaiSqlBuilder() {
             sqlService = new KaiSqlService();
         }
 
+        /// <summary>
+        /// set DBMS type
+        /// </summary>
+        /// <param name="dbmsType"></param>
+        /// <returns></returns>
         public KaiSqlBuilder SetDbmsType(DbmsType dbmsType) {
             this.dbmsType = dbmsType;
             return this;
         }
 
+        /// <summary>
+        /// set all dmlinfos
+        /// </summary>
+        /// <param name="dmlInfos"></param>
+        /// <returns></returns>
         public KaiSqlBuilder SetDmlInfos(List<DmlInfoExtension> dmlInfos) {
             if (dmlInfos == null || dmlInfos.Count == 0) return this;
             Dictionary<string, Dictionary<string, DmlHandler>> dmlHandlers = new Dictionary<string, Dictionary<string, DmlHandler>>();
@@ -39,6 +55,11 @@ namespace Kai.Universal.Builder {
             return this;
         }
 
+        /// <summary>
+        /// set all criterias
+        /// </summary>
+        /// <param name="criteriaStrategies"></param>
+        /// <returns></returns>
         public KaiSqlBuilder SetCriteriaStrategies(List<CriteriaStrategy> criteriaStrategies) {
             if (criteriaStrategies == null || criteriaStrategies.Count == 0) return this;
             Dictionary<string, CriteriaStrategyContainer> containers = new Dictionary<string, CriteriaStrategyContainer>();
@@ -68,6 +89,10 @@ namespace Kai.Universal.Builder {
             return this;
         }
 
+        /// <summary>
+        /// build
+        /// </summary>
+        /// <returns></returns>
         public KaiSqlService Build() {
             return this.sqlService;
         }

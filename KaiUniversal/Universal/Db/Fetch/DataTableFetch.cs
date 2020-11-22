@@ -2,15 +2,26 @@
 using System.Data.Common;
 
 namespace Kai.Universal.Db.Fetch {
-
+    
+    /// <summary>
+    /// the .net DataTable fetch engine
+    /// </summary>
     public class DataTableFetch : AbstractFetchHandler {
 
         private readonly DataTable datas = new DataTable();
 
+        /// <summary>
+        /// get result
+        /// </summary>
+        /// <returns></returns>
         public DataTable GetResult() {
             return datas;
         }
 
+        /// <summary>
+        /// load columns
+        /// </summary>
+        /// <param name="reader"></param>
         protected override void FetchAllColumnInfo(DbDataReader reader) {
             datas.BeginLoadData();
             // load  DataColumn
@@ -19,6 +30,10 @@ namespace Kai.Universal.Db.Fetch {
             }
         }
 
+        /// <summary>
+        /// load data
+        /// </summary>
+        /// <param name="reader"></param>
         protected override void DoProcessDataReader(DbDataReader reader) {
             // load DataRow
             while (reader.Read()) {
@@ -30,6 +45,9 @@ namespace Kai.Universal.Db.Fetch {
             datas.EndLoadData();
         }
 
+        /// <summary>
+        /// abandon
+        /// </summary>
         protected override void Abandon() {
             if (datas != null) {
                 datas.Clear();

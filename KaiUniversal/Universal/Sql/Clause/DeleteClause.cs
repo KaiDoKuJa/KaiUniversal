@@ -2,16 +2,26 @@
 using System;
 
 namespace Kai.Universal.Sql.Clause {
+    /// <summary>
+    /// Delete Clause class
+    /// </summary>
     public class DeleteClause : UpdateClause {
 
-        public static readonly string TEXT_DELETE_WITH_SPACE = "delete ";
+        internal static readonly string TEXT_DELETE_WITH_SPACE = "delete ";
 
+        /// <summary>
+        /// check pk
+        /// </summary>
         protected override void NecessaryCheck() {
             if (base.IsEmptyNonQueryMandatoryColumns()) {
                 throw new ArgumentException(NO_WHERE_COLUMNS);
             }
         }
 
+        /// <summary>
+        /// gen sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected override void GenSql(ModelInfo modelInfo) {
             string[] mainColumns = base.DmlInfo.NonQueryMandatoryColumns;
             object model = modelInfo.Model;
@@ -22,6 +32,10 @@ namespace Kai.Universal.Sql.Clause {
             this.AppendColsWithProp(mainColumns, model, TEXT_AND_WITH_SPACE);
         }
 
+        /// <summary>
+        /// gen prepared sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected override void GenPreparedSql(ModelInfo modelInfo) {
             string[] mainColumns = base.DmlInfo.NonQueryMandatoryColumns;
             object model = modelInfo.Model;

@@ -4,12 +4,24 @@ using System;
 using System.Text;
 
 namespace Kai.Universal.Sql.Clause.Dialect {
+    /// <summary>
+    /// the sqlserver only clause
+    /// </summary>
     public class SqlServerClause : QueryClause, ILimitingResultClause {
 
+        /// <summary>
+        /// default constructor, DbmsType default value is 
+        /// <seealso cref="DbmsType.FromSqlServer2012"/>
+        /// </summary>
         public SqlServerClause() {
             base.DbmsType = DbmsType.FromSqlServer2012;
         }
 
+        /// <summary>
+        /// generate select top sql with where model
+        /// </summary>
+        /// <param name="modelInfo"></param>
+        /// <returns></returns>
         public string GetFetchFirstSql(ModelInfo modelInfo) {
             sb = new StringBuilder();
             sb.Append("select top ");
@@ -24,7 +36,11 @@ namespace Kai.Universal.Sql.Clause.Dialect {
             return sb.ToString();
         }
 
-
+        /// <summary>
+        /// generate paging sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
+        /// <returns></returns>
         public string GetPagingSql(ModelInfo modelInfo) {
             switch (this.DbmsType) {
                 case DbmsType.FromSqlServer2005:

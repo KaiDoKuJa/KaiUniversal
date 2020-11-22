@@ -25,6 +25,11 @@ namespace Kai.Universal.Crypto {
 
         private Encoding encoding = Encoding.UTF8;
 
+        /// <summary>
+        /// encrypt
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public string Encrypt(string message) {
             string result = "";
 
@@ -64,6 +69,11 @@ namespace Kai.Universal.Crypto {
             return result;
         }
 
+        /// <summary>
+        /// decrypt
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public string Decrypt(string message) {
             string result = "";
 
@@ -97,6 +107,10 @@ namespace Kai.Universal.Crypto {
             return result;
         }
 
+        /// <summary>
+        /// set crypto key
+        /// </summary>
+        /// <param name="key"></param>
         public void SetCrptoKey(string key) {
             if (key == null || "".Equals(key.Trim())) {
                 throw new ArgumentNullException("key", "The crptoKey is empty!");
@@ -118,10 +132,18 @@ namespace Kai.Universal.Crypto {
             return provider;
         }
 
+        /// <summary>
+        /// get encoding
+        /// </summary>
+        /// <returns></returns>
         public Encoding GetEncoding() {
             return encoding;
         }
 
+        /// <summary>
+        /// set encoding
+        /// </summary>
+        /// <param name="encoding"></param>
         public void SetEncoding(Encoding encoding) {
             this.encoding = encoding;
         }

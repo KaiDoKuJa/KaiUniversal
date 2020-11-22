@@ -3,8 +3,15 @@ using Kai.Universal.Sql.Text;
 using System.Text;
 
 namespace Kai.Universal.Sql.Where {
+    /// <summary>
+    /// In Criteria
+    /// </summary>
     public class InCriteria : Criteria {
 
+        /// <summary>
+        /// {0} in ({1}, {2}, {3}, ...)
+        /// </summary>
+        /// <returns></returns>
         public override string GetSql() {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ColName)

@@ -13,15 +13,25 @@ namespace Kai.Universal.Sql.Clause {
     /// </summary>
     public abstract class AbstractSqlClause {
 
-        private static readonly string NO_TABLE_NAME = "no table name";
-        public static readonly string TEXT_FROM_WITH_SPACE = " from ";
-        public static readonly string TEXT_WHERE_WITH_SPACE = " where ";
-        public static readonly string TEXT_AND_WITH_SPACE = " and ";
-        public static readonly string NO_DML_INFO = "no DmlInfo";
+        internal static readonly string NO_TABLE_NAME = "no table name";
+        internal static readonly string TEXT_FROM_WITH_SPACE = " from ";
+        internal static readonly string TEXT_WHERE_WITH_SPACE = " where ";
+        internal static readonly string TEXT_AND_WITH_SPACE = " and ";
+        internal static readonly string NO_DML_INFO = "no DmlInfo";
 
+        /// <summary>
+        /// this clause dbms type
+        /// </summary>
         public DbmsType DbmsType { get; set; }
+
+        /// <summary>
+        /// this clause setting
+        /// </summary>
         public DmlInfo DmlInfo { get; set; }
 
+        /// <summary>
+        /// sql persistence
+        /// </summary>
         protected StringBuilder sb;
 
         private void BaseNecessaryCheck() {
@@ -31,22 +41,32 @@ namespace Kai.Universal.Sql.Clause {
             NecessaryCheck();
         }
 
+        /// <summary>
+        /// (abs-method) necessary check
+        /// </summary>
         protected abstract void NecessaryCheck();
-        // protected abstract <T extends ModelInfo> string genSql(T modelInfo)
+        
+        /// <summary>
+        /// (abs-method) gen sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected abstract void GenSql(ModelInfo modelInfo);
 
+        /// <summary>
+        /// (abs-method) gen prepare stmt sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected abstract void GenPreparedSql(ModelInfo modelInfo);
 
-        /**
-         * gen direct sql by sqlTemplate
-         * modelInfo usage :
-         * (m) sqlTemplate - ex: select xxx from xxx where xxx=#1 and yyy=${2} and zzz=:3
-         * (o) replacements - set replacePattern to replace target string like #1, ${2}, :3
-         * (o) criterias - after replaced sqlTemplate, append " and {criterias.whereSql}"
-         *                 ps: but select sql template has "order by" can't append this clause
-         * @param modelInfo
-         * @return
-         */
+        /// <summary>
+        /// gen direct sql by sqlTemplate
+        /// <para>modelInfo usage :</para>
+        /// <para>(m) sqlTemplate - ex: select xxx from xxx where xxx=#1 and yyy=${2} and zzz=:3</para>
+        /// <para>(o) replacements - set replacePattern to replace target string like #1, ${2}, :3</para>
+        /// <para>(o) criterias - after replaced sqlTemplate, append " and {criterias.whereSql}"</para>
+        /// <para>                ps: but select sql template has "order by" can't append this clause</para>
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected void GenDirectSql(ModelInfo modelInfo) {
             sb.Append(DmlInfo.SqlTemplate);
             string whereSql = null;
@@ -138,10 +158,20 @@ namespace Kai.Universal.Sql.Clause {
             return OrmUtility.IsStringInArray(col, noAttachQuoteColumns);
         }
 
+        /// <summary>
+        /// use sqlTemplate property
+        /// </summary>
+        /// <param name="sqlTemplate"></param>
+        /// <returns></returns>
         protected bool UseSqlTemplate(string sqlTemplate) {
             return (sqlTemplate != null && !"".Equals(sqlTemplate.Trim()));
         }
 
+        /// <summary>
+        /// append columns with delimiter
+        /// </summary>
+        /// <param name="cols"></param>
+        /// <param name="delimiter"></param>
         protected void AppendCols(string[] cols, char delimiter) {
             for (int i = 0; i < cols.Length; i++) {
                 if (i > 0) {
@@ -151,6 +181,11 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
+        /// <summary>
+        /// append propery value and with quote or not
+        /// </summary>
+        /// <param name="propValue"></param>
+        /// <param name="isNoAttachQuoteColumn"></param>
         protected void AppendPropValue(object propValue, bool isNoAttachQuoteColumn) {
             if (propValue == null) {
                 sb.Append("null");
@@ -194,6 +229,12 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
+        /// <summary>
+        /// get the column mapping to model column name
+        /// </summary>
+        /// <param name="colName"></param>
+        /// <param name="isMapModel"></param>
+        /// <returns></returns>
         protected string GetColumnMapping(string colName, bool isMapModel) {
             string wordCase = colName;
             Dictionary<string, string> customerMapping = DmlInfo.CustomerMapping;
@@ -206,7 +247,7 @@ namespace Kai.Universal.Sql.Clause {
                 }
             } else {
                 wordCase = customerMapping[colName];
-                if (!isMapModel) wordCase = Char.ToUpper(wordCase[0]) + wordCase.Substring(1);
+                if (!isMapModel) wordCase = char.ToUpper(wordCase[0]) + wordCase.Substring(1);
             }
             return wordCase;
         }

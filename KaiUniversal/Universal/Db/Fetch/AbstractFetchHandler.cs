@@ -4,22 +4,41 @@ using System.Data;
 using System.Data.Common;
 
 namespace Kai.Universal.Db.Fetch {
+    /// <summary>
+    /// base fetch engine
+    /// </summary>
     public abstract class AbstractFetchHandler {
 
         private static readonly string NOT_CONNECT = "db is not connect...";
         private static readonly string EMPTY_SQL = "sql is empty...";
 
+        /// <summary>
+        /// command timeout
+        /// </summary>
         public int CommandTimeout { get; set; }
 
+        /// <summary>
+        /// (abs-method) load column (metadata)
+        /// </summary>
+        /// <param name="reader"></param>
         protected abstract void FetchAllColumnInfo(DbDataReader reader);
 
+        /// <summary>
+        /// (abs-method) load data
+        /// </summary>
+        /// <param name="reader"></param>
         protected abstract void DoProcessDataReader(DbDataReader reader);
 
-        /**
-         * when execute cause exception, then calling abandon method.
-         */
+        /// <summary>
+        /// when execute cause exception, then calling abandon method.
+        /// </summary>
         protected abstract void Abandon();
 
+        /// <summary>
+        /// execute sql
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="sql"></param>
         public void Execute(DbConnection connection, String sql) {
             if (connection == null) throw new ArgumentException(NOT_CONNECT);
             if (sql == null || "".Equals(sql.Trim())) throw new ArgumentException(EMPTY_SQL);

@@ -7,13 +7,22 @@ using System.Text.RegularExpressions;
 
 namespace Kai.Universal.Text {
 
+    /// <summary>
+    /// Text utility
+    /// </summary>
     public class TextUtility {
 
-        public static readonly string STRING_HYPHEN = "-";
-        public static readonly string STRING_UNDERSCORE = "_";
+        private static readonly string STRING_HYPHEN = "-";
+        private static readonly string STRING_UNDERSCORE = "_";
 
         private TextUtility() { }
 
+        /// <summary>
+        /// if source is null or blank, change to default string
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
         public static string ToDefaultString(string source, string defaultValue) {
             if (source == null || "".Equals(source.Trim())) {
                 return defaultValue;
@@ -65,6 +74,13 @@ namespace Kai.Universal.Text {
             return sb.ToString();
         }
 
+        /// <summary>
+        /// change word case
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="srcCase"></param>
+        /// <param name="outCase"></param>
+        /// <returns></returns>
         public static string ConvertWordCase(string s, WordCase srcCase, WordCase outCase) {
             if (s == null || "".Equals(s.Trim())) {
                 return "";
@@ -96,7 +112,7 @@ namespace Kai.Universal.Text {
 
         }
 
-        public static char ConvertCharCase(char c, WordCase outCase) {
+        private static char ConvertCharCase(char c, WordCase outCase) {
             switch (outCase) {
                 case WordCase.LowerCamel:
                 case WordCase.LowerUnderscore:

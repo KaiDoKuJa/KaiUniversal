@@ -5,6 +5,7 @@
     <RootNamespace>Kai</RootNamespace>
     <Version>2.0.6.2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>KaiDoKuJa</Authors>
     <Company>KaiDoKuGroup</Company>
     <PackageId>Kai.Universal.Extension</PackageId>

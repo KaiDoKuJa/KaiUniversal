@@ -4,13 +4,18 @@ using System;
 using System.Collections;
 
 namespace Kai.Universal.Sql.Clause {
+    /// <summary>
+    /// Update clause class
+    /// </summary>
     public class UpdateClause : AbstractSqlClause {
 
-        public static readonly string NO_COLUMNS = "no update columns";
-        public static readonly string NO_WHERE_COLUMNS = "no where columns";
-        public static readonly string TEXT_UPDATE_WITH_SPACE = "update ";
+        internal static readonly string NO_COLUMNS = "no update columns";
+        internal static readonly string NO_WHERE_COLUMNS = "no where columns";
+        internal static readonly string TEXT_UPDATE_WITH_SPACE = "update ";
 
-
+        /// <summary>
+        /// check columns / pk
+        /// </summary>
         protected override void NecessaryCheck() {
             if (base.IsEmptyColumns()) {
                 throw new ArgumentNullException(NO_COLUMNS);
@@ -20,7 +25,10 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
-
+        /// <summary>
+        /// gen sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected override void GenSql(ModelInfo modelInfo) {
             string[] updateColumns = base.DmlInfo.Columns;
             string[] mainColumns = base.DmlInfo.NonQueryMandatoryColumns;
@@ -39,7 +47,10 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
-
+        /// <summary>
+        /// gen prepared sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected override void GenPreparedSql(ModelInfo modelInfo) {
             string[] updateColumns = base.DmlInfo.Columns;
             string[] mainColumns = base.DmlInfo.NonQueryMandatoryColumns;
@@ -53,14 +64,14 @@ namespace Kai.Universal.Sql.Clause {
             this.AppendColsWithPrepareProp(mainColumns, model, TEXT_AND_WITH_SPACE);
         }
 
-        /**
-         * ex : update delimiter "," then gen AAA='aaa', BBB=1.0, CCC=getdate()
-         * ex : and delimiter "and"  then gen AAA='aaa' and BBB=1.0 and CCC=getdate()
-         * @param cols colNames
-         * @param model value object
-         * @param delimiter delimiter
-         * @param specialCols special colNames
-         */
+        /// <summary>
+        /// append set region clause by model's props
+        /// <para>ex : update delimiter "," then gen AAA='aaa', BBB=1.0, CCC=getdate()</para>
+        /// <para>ex : and delimiter "and"  then gen AAA='aaa' and BBB=1.0 and CCC=getdate()</para>
+        /// </summary>
+        /// <param name="cols"></param>
+        /// <param name="model"></param>
+        /// <param name="delimiter"></param>
         protected void AppendColsWithProp(string[] cols, object model, string delimiter) {
             bool isMapModel = false;
             var map = model as IDictionary;
@@ -87,6 +98,12 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
+        /// <summary>
+        /// append set region clause with prepare pattern
+        /// </summary>
+        /// <param name="cols"></param>
+        /// <param name="model"></param>
+        /// <param name="delimiter"></param>
         protected void AppendColsWithPrepareProp(string[] cols, object model, string delimiter) {
             bool isMapModel = false;
             var map = model as IDictionary;

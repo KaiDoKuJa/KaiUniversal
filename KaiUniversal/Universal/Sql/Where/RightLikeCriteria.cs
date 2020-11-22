@@ -2,8 +2,15 @@
 using System.Text;
 
 namespace Kai.Universal.Sql.Where {
+    /// <summary>
+    /// Right Like Criteria
+    /// </summary>
     public class RightLikeCriteria : Criteria {
 
+        /// <summary>
+        /// {0} {Symbol} '{1}%'
+        /// </summary>
+        /// <returns></returns>
         public override string GetSql() {
             StringBuilder sb = new StringBuilder();
             var c3 = base.ColValue as string;

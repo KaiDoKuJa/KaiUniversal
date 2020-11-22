@@ -15,6 +15,12 @@ namespace Kai.Universal.Text {
      **/
     public static class ReflectUtility {
 
+        /// <summary>
+        /// use <seealso cref="PropertyInfo"/>to set value
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="variableName"></param>
+        /// <param name="val"></param>
         public static void SetValue(object model, string variableName, object val) {
             if (model == null || variableName == null || "".Equals(variableName.Trim())
                  || val == null || val == DBNull.Value) return;
@@ -62,7 +68,15 @@ namespace Kai.Universal.Text {
             return val.ToString();
         }
 
-        //用這個取代java modelFetch 裡的getField, 因為 c# field/prop各自不同，java的部分要改名為var避免兩種混淆
+        /// <summary>
+        /// check the classOfT has this variableName and check var type
+        /// <para>用這個取代java modelFetch 裡的getField, 因為 c# field/prop各自不同，java的部分要改名為var避免兩種混淆</para>
+        /// </summary>
+        /// <param name="classOfT"></param>
+        /// <param name="variableName"></param>
+        /// <param name="variableType"></param>
+        /// <param name="isFieldNameUpperCase"></param>
+        /// <returns></returns>
         public static bool HasVariable(Type classOfT, string variableName, Type variableType, bool isFieldNameUpperCase = true) {
             bool result = false;
             string propertyName = isFieldNameUpperCase ? variableName : TextUtility.ConvertWordCase(variableName, WordCase.LowerCamel, WordCase.UpperCamel);
@@ -82,6 +96,14 @@ namespace Kai.Universal.Text {
             return result;
         }
 
+        /// <summary>
+        /// get value by variableName
+        /// <para>1. use PropertyInfo get value</para>
+        /// <para>2. if null, use FieldInfo get value</para>
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="variableName"></param>
+        /// <returns></returns>
         public static object GetValue(object model, string variableName) {
             object refVal = null;
             if (model == null || variableName == null || "".Equals(variableName.Trim())) return null;
@@ -99,6 +121,11 @@ namespace Kai.Universal.Text {
             return refVal;
         }
 
+        /// <summary>
+        /// is list
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
         public static bool IsList(object o) {
             if (o == null) return false;
             return o is IList &&
@@ -106,6 +133,11 @@ namespace Kai.Universal.Text {
                    o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
         }
 
+        /// <summary>
+        /// is dictionary
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
         public static bool IsDictionary(object o) {
             if (o == null) return false;
             return o is IDictionary &&
@@ -113,12 +145,22 @@ namespace Kai.Universal.Text {
                    o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
         }
 
+        /// <summary>
+        /// is hashtable
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
         public static bool IsHashtable(object o) {
             if (o == null) return false;
             return o is IDictionary &&
                    o.GetType().IsAssignableFrom(typeof(Hashtable));
         }
 
+        /// <summary>
+        /// is number type
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         public static bool IsNumberType(object val) {
             return (val is double
                 || val is float

@@ -5,25 +5,55 @@ using Kai.Universal.Sql.Type;
 using System.Threading;
 
 namespace Kai.Universal.Sql.Handler {
+    /// <summary>
+    /// The DmlHandler for SqlClause
+    /// </summary>
     public class DmlHandler {
 
         private readonly object _locker = new object();
+        /// <summary>
+        /// The clause
+        /// </summary>
         public AbstractSqlClause Clause { get; set; }
 
+        /// <summary>
+        /// Empty constructor
+        /// </summary>
         public DmlHandler() { }
+        /// <summary>
+        /// constructor with clause
+        /// </summary>
+        /// <param name="clause"></param>
         public DmlHandler(AbstractSqlClause clause) {
             this.Clause = clause;
         }
 
+        /// <summary>
+        /// create DmlHandler by dmlInfo
+        /// </summary>
+        /// <param name="dmlInfo"></param>
+        /// <returns></returns>
         public static DmlHandler CreateHandler(DmlInfo dmlInfo) {
             return CreateHandler(DbmsType.Default, dmlInfo);
         }
 
+        /// <summary>
+        /// create DmlHandler by dmlInfo
+        /// </summary>
+        /// <param name="dbmsType"></param>
+        /// <param name="dmlInfo"></param>
+        /// <returns></returns>
         public static DmlHandler CreateHandler(DbmsType dbmsType, DmlInfo dmlInfo) {
             AbstractSqlClause clause = CreateClause(dbmsType, dmlInfo);
             return new DmlHandler(clause);
         }
 
+        /// <summary>
+        /// create clause by dmlInfo and dbms type
+        /// </summary>
+        /// <param name="dbmsType"></param>
+        /// <param name="dmlInfo"></param>
+        /// <returns></returns>
         private static AbstractSqlClause CreateClause(DbmsType dbmsType, DmlInfo dmlInfo) {
             AbstractSqlClause clause;
             switch (dmlInfo.DmlType) {
@@ -55,6 +85,11 @@ namespace Kai.Universal.Sql.Handler {
             return clause;
         }
 
+        /// <summary>
+        /// Get generated sql, calling Clause.GetSql by Monitor.Enter lock
+        /// </summary>
+        /// <param name="modelInfo"></param>
+        /// <returns></returns>
         public string GetSql(ModelInfo modelInfo) {
             bool __isLocked = false;
             try {
@@ -71,6 +106,12 @@ namespace Kai.Universal.Sql.Handler {
             }
         }
 
+        /// <summary>
+        /// Get generated sql, calling Clause.GetSql by Monitor.Enter lock
+        /// </summary>
+        /// <param name="queryType"></param>
+        /// <param name="modelInfo"></param>
+        /// <returns></returns>
         public string GetSql(QueryType queryType, ModelInfo modelInfo) {
             bool __isLocked = false;
             try {
@@ -96,8 +137,8 @@ namespace Kai.Universal.Sql.Handler {
                 var queryClause = Clause as QueryClause;
                 if (queryClause != null) {
                     switch (queryType) {
-                        case QueryType.SelectAll:
-                            return queryClause.GetSelectAllSql();
+                        case QueryType.Select:
+                            return queryClause.GetSelectSql();
                         case QueryType.SelectCnt:
                             return queryClause.GetSelectCntSql(modelInfo);
                         default:
@@ -110,6 +151,10 @@ namespace Kai.Universal.Sql.Handler {
             }
         }
 
+        /// <summary>
+        /// Get last generated sql
+        /// </summary>
+        /// <returns></returns>
         public string GetLastSql() {
             return Clause.GetLastSql();
         }

@@ -3,14 +3,23 @@ using System.Text;
 
 namespace Kai.Universal.Text {
 
+    /// <summary>
+    /// the Hex Utility
+    /// </summary>
     public class HexUtility {
 
         private HexUtility() { }
 
-        // KaiJava version code :
+        /// <summary>
+        /// KaiJava version code :
+        /// </summary>
         static readonly char[] HEXES = "0123456789ABCDEF".ToCharArray();
 
-        // KaiJava version code :
+        /// <summary>
+        /// KaiJava version code : 
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public static string BytesToHexJ(byte[] bytes) {
             if (bytes == null) {
                 return null;
@@ -28,6 +37,11 @@ namespace Kai.Universal.Text {
             return new string(hexChars);
         }
 
+        /// <summary>
+        /// bytes to hex
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public static string BytesToHex(byte[] bytes) {
             if (bytes == null) {
                 return null;
@@ -49,6 +63,11 @@ namespace Kai.Universal.Text {
             return -1;
         }
 
+        /// <summary>
+        /// hex to bytes
+        /// </summary>
+        /// <param name="hexString"></param>
+        /// <returns></returns>
         public static byte[] HexToBytes(string hexString) {
             int len = hexString.Length;
 
@@ -72,6 +91,12 @@ namespace Kai.Universal.Text {
             return bytes;
         }
 
+        /// <summary>
+        /// int to binary array 
+        /// (沒有任何地方用到)
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         public static int[] ToBinaryArray(int val) {
             int i = 0;
             int t1 = val;

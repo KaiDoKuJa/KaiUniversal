@@ -4,17 +4,27 @@ using System;
 using System.Collections;
 
 namespace Kai.Universal.Sql.Clause {
+    /// <summary>
+    /// Insert Clause class
+    /// </summary>
     public class InsertClause : AbstractSqlClause {
 
-        public static readonly string NO_COLUMNS = "no insert columns";
-        public static readonly string TEXT_INSERT_INTO_WITH_SPACE = "insert into ";
+        internal static readonly string NO_COLUMNS = "no insert columns";
+        internal static readonly string TEXT_INSERT_INTO_WITH_SPACE = "insert into ";
 
+        /// <summary>
+        /// check columns
+        /// </summary>
         protected override void NecessaryCheck() {
             if (base.IsEmptyColumns()) {
                 throw new ArgumentNullException(NO_COLUMNS);
             }
         }
 
+        /// <summary>
+        /// gen sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected override void GenSql(ModelInfo modelInfo) {
             sb.Append(TEXT_INSERT_INTO_WITH_SPACE);
             sb.Append(base.DmlInfo.TableName);
@@ -25,7 +35,10 @@ namespace Kai.Universal.Sql.Clause {
             sb.Append(")");
         }
 
-
+        /// <summary>
+        /// gen prepared sql
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected override void GenPreparedSql(ModelInfo modelInfo) {
             string[] insertColumns = base.DmlInfo.Columns;
             object model = modelInfo.Model;
@@ -39,13 +52,11 @@ namespace Kai.Universal.Sql.Clause {
             sb.Append(")");
         }
 
-        /**
-         * append model's props
-         * ex: 'aaa', 1.0, 'bbb', getdate()
-         * @param cols colNames
-         * @param model value object
-         * @param specialCols special colNames
-         */
+        /// <summary>
+        /// append model's props
+        /// <para>ex: 'aaa', 1.0, 'bbb', getdate()</para>
+        /// </summary>
+        /// <param name="modelInfo"></param>
         protected void AppendProps(ModelInfo modelInfo) {
             bool isMapModel = false;
             object model = modelInfo.Model;
@@ -73,13 +84,12 @@ namespace Kai.Universal.Sql.Clause {
             }
         }
 
-        /**
-         * append prepare props
-         * ex: ?,?,getdate(),?
-         * @param cols colNames
-         * @param model value object
-         * @param specialCols special colNames
-         */
+        /// <summary>
+        /// append prepare props
+        /// <para>ex: ?,?,getdate(),?</para>
+        /// </summary>
+        /// <param name="cols"></param>
+        /// <param name="model"></param>
         protected void AppendPrepareProps(string[] cols, object model) {
             bool isMapModel = false;
             var map = model as IDictionary;

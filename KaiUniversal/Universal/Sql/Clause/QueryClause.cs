@@ -30,9 +30,9 @@ namespace Kai.Universal.Sql.Clause {
             sb.Append(TEXT_FROM_WITH_SPACE);
             sb.Append(base.DmlInfo.TableName);
 
-            this.AppendWhereSql(modelInfo.Criterias);
-            this.AppendOrderBy(modelInfo.OrderBy);
-            this.AppendGroupBy(modelInfo.GroupBy);
+            this.AppendWhereSql(modelInfo?.Criterias);
+            this.AppendOrderBy(modelInfo?.OrderBy);
+            this.AppendGroupBy(modelInfo?.GroupBy);
         }
 
         /// <summary>

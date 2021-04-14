@@ -47,7 +47,7 @@ namespace Kai.Universal.Db {
 #endif
 
         private TResult DoGetData<TResult>(int commandTimeout, string sql, Func<DbConnection, int, string, TResult> generator) where TResult : class {
-            if (sql != null && !"".Equals(sql.Trim())) return null;
+            if (sql == null || "".Equals(sql.Trim())) return null;
 
             TResult res = null;
             DbConnection connection = null;
